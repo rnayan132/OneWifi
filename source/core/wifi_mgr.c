@@ -378,6 +378,7 @@ int main(int argc, char *argv[])
         get_misc_descriptor()->daemonize_fn();
     }
 
+    wifi_util_info_print(WIFI_MGR,"init_wifimgr: Initilise wifi manager -> test print\n");
     if (init_wifimgr() != 0) {
         wifi_util_error_print(WIFI_MGR,"%s: wifimgr init failed\n", __func__);
         return -1;
