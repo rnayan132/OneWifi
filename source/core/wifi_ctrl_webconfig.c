@@ -1732,7 +1732,9 @@ int webconfig_hal_mac_filter_apply(wifi_ctrl_t *ctrl, webconfig_subdoc_decoded_d
                         hash_map_put(current_config->acl_map,strdup(new_mac_str),temp_acl_entry);
                         snprintf(macfilterkey, sizeof(macfilterkey), "%s-%s", current_config->vap_name, new_mac_str);
 
-                        wifidb_update_wifi_macfilter_config(macfilterkey, temp_acl_entry, true);
+                        if (temp_acl_entry != NULL) { // CID: 422418
+                            wifidb_update_wifi_macfilter_config(macfilterkey, temp_acl_entry, true);
+                        }
                     } else {
                         if (strncmp(check_acl_entry->device_name, new_acl_entry->device_name, sizeof(check_acl_entry->device_name)-1) != 0) {
                             strncpy(check_acl_entry->device_name, new_acl_entry->device_name, sizeof(check_acl_entry->device_name)-1);

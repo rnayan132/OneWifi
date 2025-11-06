@@ -824,8 +824,16 @@ static int update_xfinity_vap_info(cJSON *blob, webconfig_subdoc_data_t *data, p
 
         radio_index = convert_vap_name_to_radio_array_index(&params->hal_cap.wifi_prop,
             param->valuestring);
+        if (radio_index == UINT_MAX) { // CID: 729193, 729192, 729191, 729190
+            return RETURN_ERR;
+        }
+
         vap_array_index = convert_vap_name_to_array_index(&params->hal_cap.wifi_prop,
             param->valuestring);
+        if (vap_array_index == UINT_MAX) {
+            return RETURN_ERR;
+        }
+
         vap_info = &params->radios[radio_index].vaps.vap_map.vap_array[vap_array_index];
 
         snprintf(vap_info->vap_name, sizeof(vap_info->vap_name), "%s", param->valuestring);
