@@ -3014,7 +3014,8 @@ void process_channel_change_event(wifi_channel_change_event_t *ch_chg, bool is_n
                         snprintf(radio_params->radarDetected, sizeof(radio_params->radarDetected), "%d,%x,%lld", l_radio->radarInfo.last_channel, ch_chg->channelWidth, l_radio->radarInfo.timestamp);
                     } else {
                         // CID: 508122 need to understand why (+ sizeof)
-                        snprintf(radio_params->radarDetected + strlen(radio_params->radarDetected), sizeof(radio_params->radarDetected), ";%d,%x,%lld", l_radio->radarInfo.last_channel, ch_chg->channelWidth, l_radio->radarInfo.timestamp);
+                        int len = strlen(radio_params->radarDetected);
+                        snprintf(radio_params->radarDetected + len, sizeof(radio_params->radarDetected) - len, ";%d,%x,%lld", l_radio->radarInfo.last_channel, ch_chg->channelWidth, l_radio->radarInfo.timestamp);
                     }
                     pthread_mutex_unlock(&g_wifidb->data_cache_lock);
                 }
