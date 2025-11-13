@@ -1060,11 +1060,11 @@ err_close:
 char *file_get(const char *path)
 {
     ssize_t n;
-    ssize_t size = 0;
-    ssize_t len = 0;
+    size_t size = 0; // CID: 559469
+    size_t len = 0;
     char *buf = NULL;
     char *nbuf = NULL;
-    char *hunk[4096];
+    char hunk[4096];
     int fd;
     if ((fd = open(path, O_RDONLY)) < 0)
         goto err;
