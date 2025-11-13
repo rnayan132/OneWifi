@@ -8728,7 +8728,7 @@ void get_psm_mac_list_entry(unsigned int instance_number, char *l_vap_name, unsi
             continue;
         }
 
-        memset(temp_psm_mac_param, 0, sizeof(temp_psm_mac_param)); // CID: 330422
+        memset((void *)temp_psm_mac_param, 0, sizeof(temp_psm_mac_param)); // CID: 330422
         memset(recName, 0, sizeof(recName));
         memset(strValue, 0, sizeof(strValue));
         snprintf(recName, sizeof(recName), MacFilterDevice, instance_number, index);
