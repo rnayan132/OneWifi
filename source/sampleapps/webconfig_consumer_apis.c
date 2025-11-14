@@ -1892,7 +1892,7 @@ int decode_802_11_frame(webconfig_consumer_t *consumer, unsigned int vap_index, 
     rbusObject_t rdata;
     rbusValue_t value;
     int rc;
-    frame_data_t frame_data = { 0 }; // CID: 334034
+    frame_data_t frame_data;
     FILE *fp = NULL;
     char tmp_buff[MAX_FRAME_SZ], *tmp;
     unsigned int count = 0, nlen = 0, pos = 0;

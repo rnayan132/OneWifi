@@ -301,7 +301,7 @@ void CosaDmlWiFiGetFromPSM(void)
     wifi_radio_operationParam_t radio_cfg;
     wifi_radio_feature_param_t radio_feat_cfg;
     wifi_vap_info_t vap_config;
-    wifi_front_haul_bss_t *bss_cfg = NULL; // CID: 558151
+    wifi_front_haul_bss_t *bss_cfg;
     wifi_global_param_t global_cfg;
     UINT vap_index;
 
