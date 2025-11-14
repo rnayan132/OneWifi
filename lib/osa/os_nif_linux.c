@@ -970,6 +970,7 @@ void devnull(int fd)
 {
     int nfd;
 
+    LOG(WARNING, "RTesting: CID: 72750: %s:%d Enter\n", __func__, __LINE__);
     nfd = open("/dev/null", O_RDWR);
     if (nfd < 0) // CID: 72750
     {
@@ -979,6 +980,7 @@ void devnull(int fd)
 
     dup2(nfd, fd);
     close(nfd);
+    LOG(WARNING, "RTesting: CID: 72750: %s:%d Exit\n", __func__, __LINE__);
 }
 #if 0
 

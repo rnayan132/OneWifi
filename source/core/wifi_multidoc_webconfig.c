@@ -800,6 +800,7 @@ static int update_xfinity_vap_info(cJSON *blob, webconfig_subdoc_data_t *data, p
     cJSON *param;
     wifi_mgr_t *g_wifi_mgr = (wifi_mgr_t *)get_wifimgr_obj();
 
+    wifi_util_info_print(WIFI_CTRL, "RTesting: CID: 729193, 729192, 729191, 729190: %s:%d Enter\n", __func__, __LINE__);
     size = cJSON_GetArraySize(blob);
     cJSON *vb_entry = NULL;
     for (unsigned int i = 0; i < size; i++) {
@@ -1152,6 +1153,7 @@ static int update_xfinity_vap_info(cJSON *blob, webconfig_subdoc_data_t *data, p
             }
         }
     }
+    wifi_util_info_print(WIFI_CTRL, "RTesting: CID: 729193, 729192, 729191, 729190: %s:%d Exit\n", __func__, __LINE__);
     return RETURN_OK;
 }
 

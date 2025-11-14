@@ -1538,6 +1538,7 @@ json_t *ovsdb_json_exec(char *method, json_t *params)
 
     json_t *jexec = json_pack("{ s:s, s:o, s:i }", "method", method, "params", params, "id", getpid());
 
+    DEBUG("RTesting: CID: 19478, 19918: %s:%d Enter\n", __func__, __LINE__);
     str = json_dumps(jexec, 0);
     DEBUG(">>>>>>> %s\n", str);
 
@@ -1567,10 +1568,12 @@ json_t *ovsdb_json_exec(char *method, json_t *params)
 
     jres = json_loads(buf, JSON_PRESERVE_ORDER, NULL);
 
+    DEBUG("RTesting: CID: 19478, 19918: %s:%d Exit\n", __func__, __LINE__);
 error:
     if (str != NULL) free(str);
     if (db >= 0) ovsdb_close(db); // CID: 19918
 
+    DEBUG("RTesting: CID: 19478, 19918: %s:%d Exit\n", __func__, __LINE__);
     return jres;
 }
 

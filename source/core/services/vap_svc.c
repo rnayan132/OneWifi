@@ -216,6 +216,7 @@ int vap_svc_start_stop(vap_svc_t *svc, bool enable)
     wifi_vap_info_map_t *vap_map = NULL;
     wifi_vap_info_map_t *tgt_vap_map = (wifi_vap_info_map_t*)calloc(1, sizeof(wifi_vap_info_map_t));
 
+    wifi_util_info_print(WIFI_CTRL, "RTesting: CID: 336329: %s:%d Enter\n", __func__, __LINE__);
     if (!tgt_vap_map)
     {
         wifi_util_error_print(WIFI_CTRL,"WIFI %s: calloc failure\n",__FUNCTION__);
@@ -304,6 +305,7 @@ int vap_svc_start_stop(vap_svc_t *svc, bool enable)
 
     free(tgt_vap_map);
 
+    wifi_util_info_print(WIFI_CTRL, "RTesting: CID: 336329: %s:%d Exit\n", __func__, __LINE__);
     return 0;
 
 }

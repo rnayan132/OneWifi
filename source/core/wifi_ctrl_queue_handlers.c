@@ -810,6 +810,8 @@ void process_xfinity_vaps(wifi_hotspot_action_t param, bool hs_evt)
     wifi_rfc_dml_parameters_t *rfc_param = (wifi_rfc_dml_parameters_t *)get_wifi_db_rfc_parameters();
     pub_svc = get_svc_by_type(ctrl, vap_svc_type_public);
 
+    wifi_util_info_print(WIFI_CTRL, "RTesting: CID: 565496: %s:%d Enter\n", __func__, __LINE__);
+
     for(int radio_indx = 0; radio_indx < num_radios; ++radio_indx) {
         wifi_vap_info_map_t *wifi_vap_map = (wifi_vap_info_map_t *)get_wifidb_vap_map(radio_indx);
         lnf_vap_info = (wifi_vap_info_t *)get_wifidb_vap_parameters(getApFromRadioIndex(radio_indx, VAP_PREFIX_LNF_PSK));
@@ -917,6 +919,7 @@ void process_xfinity_vaps(wifi_hotspot_action_t param, bool hs_evt)
         }
         wifi_util_info_print(WIFI_CTRL,"%s:%d LnF VAP %s config changed as per %s event\n",__func__,__LINE__,lnf_vap_info->vap_name ,wifi_hotspot_action_to_string(param));
     }
+    wifi_util_info_print(WIFI_CTRL, "RTesting: CID: 565496: %s:%d Exit\n", __func__, __LINE__);
 }
 
 void convert_freq_to_channel(unsigned int freq, unsigned char *channel)
@@ -1535,6 +1538,7 @@ void process_greylist_mac_filter(void *data)
     char macfilterkey[128];
     wifi_vap_info_map_t *wifi_vap_map = NULL;
 
+    wifi_util_info_print(WIFI_CTRL, "RTesting: CID: 282106: %s:%d Enter\n", __func__, __LINE__);
     memset(macfilterkey, 0, sizeof(macfilterkey));
 
     wifi_util_dbg_print(WIFI_CTRL,"%s:%d Enter \n", __FUNCTION__, __LINE__);
@@ -1624,6 +1628,7 @@ void process_greylist_mac_filter(void *data)
         write_to_file(wifi_health_log, log_buf);
         wifi_util_dbg_print(WIFI_CTRL,"%s",log_buf);
    }
+    wifi_util_info_print(WIFI_CTRL, "RTesting: CID: 282106: %s:%d Exit\n", __func__, __LINE__);
 }
 
 void process_wifi_host_sync()
@@ -2589,6 +2594,7 @@ static void update_wifi_vap_config(int device_mode)
     rdk_wifi_vap_info_t *rdk_vap_info;
     wifi_mgr_t *wifi_mgr = get_wifimgr_obj();
 
+    wifi_util_info_print(WIFI_CTRL, "RTesting: CID: 337101: %s:%d Enter\n", __func__, __LINE__);
     if (device_mode != rdk_dev_mode_type_ext) {
         return;
     }
@@ -2614,6 +2620,7 @@ static void update_wifi_vap_config(int device_mode)
             get_wifidb_obj()->desc.update_wifi_vap_info_fn(vap_info->vap_name, vap_info, rdk_vap_info);
         }
     }
+    wifi_util_info_print(WIFI_CTRL, "RTesting: CID: 337101: %s:%d Exit\n", __func__, __LINE__);
 }
 
 void process_device_mode_command_event(int device_mode)
@@ -2758,6 +2765,7 @@ int dfs_nop_start_timer(void *args)
 
     radarDetected_temp[sizeof(radarDetected_temp) - 1] = '\0'; // CID: 508126, (508120) Buffer not null terminicated
 
+    wifi_util_info_print(WIFI_CTRL, "RTesting: CID: 508126, 508120: %s:%d Enter\n", __func__, __LINE__);
     if( !strcmp(radarDetected_temp, " ") || radarDetected_temp == NULL ) {
         wifi_util_error_print(WIFI_CTRL, "%s:%d No radar detected \n", __func__, __LINE__);
         return RETURN_ERR;
@@ -2822,6 +2830,7 @@ int dfs_nop_start_timer(void *args)
         strncpy(radio_params->radarDetected, " ", sizeof(radio_params->radarDetected));
     }
 
+    wifi_util_info_print(WIFI_CTRL, "RTesting: CID: 508126, 508120: %s:%d Exit\n", __func__, __LINE__);
     return TIMER_TASK_COMPLETE;
 }
 
@@ -2833,6 +2842,7 @@ int dfs_nop_finish_timer(void *args)
     char radarDetected_temp[128];
     unsigned int ch_temp;
 
+    wifi_util_info_print(WIFI_CTRL, "RTesting: CID: 508129: %s:%d Enter\n", __func__, __LINE__);
     if (args == NULL) {
         wifi_util_error_print(WIFI_CTRL, "%s:%d NULL Pointer\r\n", __func__, __LINE__);
         return RETURN_ERR;
@@ -2871,6 +2881,7 @@ int dfs_nop_finish_timer(void *args)
         radar_detected_ch_time = strtok_r(NULL, ";", &str_re);
     }
 
+    wifi_util_info_print(WIFI_CTRL, "RTesting: CID: 508129: %s:%d Exit\n", __func__, __LINE__);
     return TIMER_TASK_COMPLETE;
 }
 
@@ -2886,6 +2897,8 @@ void process_channel_change_event(wifi_channel_change_event_t *ch_chg, bool is_n
     vap_svc_t  *pub_svc = NULL;
     int ret = 0;
     wifi_monitor_data_t *data = NULL;
+
+    wifi_util_info_print(WIFI_CTRL, "RTesting: CID: 508122, 508123, 508119: %s:%d Enter\n", __func__, __LINE__);
 
     radio_params = (wifi_radio_operationParam_t *)get_wifidb_radio_map(ch_chg->radioIndex);
     if (radio_params == NULL) {
@@ -3014,6 +3027,7 @@ void process_channel_change_event(wifi_channel_change_event_t *ch_chg, bool is_n
                         snprintf(radio_params->radarDetected, sizeof(radio_params->radarDetected), "%d,%x,%lld", l_radio->radarInfo.last_channel, ch_chg->channelWidth, l_radio->radarInfo.timestamp);
                     } else {
                         // CID: 508122 need to understand why (+ sizeof)
+                        wifi_util_info_print(WIFI_CTRL, "RTesting: CID: 508122: %s:%d Mid\n", __func__, __LINE__);
                         int len = strlen(radio_params->radarDetected);
                         snprintf(radio_params->radarDetected + len, sizeof(radio_params->radarDetected) - len, ";%d,%x,%lld", l_radio->radarInfo.last_channel, ch_chg->channelWidth, l_radio->radarInfo.timestamp);
                     }
@@ -3144,6 +3158,8 @@ void process_channel_change_event(wifi_channel_change_event_t *ch_chg, bool is_n
     g_wifidb->ctrl.webconfig_state |= ctrl_webconfig_state_radio_cfg_rsp_pending;
     start_wifi_sched_timer(ch_chg->radioIndex, ctrl, wifi_radio_sched);
     update_wifi_radio_config(ch_chg->radioIndex, radio_params, radio_feat);
+
+    wifi_util_info_print(WIFI_CTRL, "RTesting: CID: 508122, 508123, 508119: %s:%d Exit\n", __func__, __LINE__);
 }
 
 #define MAX_NEIGHBOURS 250

@@ -8718,6 +8718,7 @@ void get_psm_mac_list_entry(unsigned int instance_number, char *l_vap_name, unsi
     memset(new_mac_str, 0, sizeof(new_mac_str));
     memset(macfilterkey, 0, sizeof(macfilterkey));
 
+    wifi_util_info_print(WIFI_CTRL, "RTesting: CID: 330422: %s:%d Enter total_entry %d\n", __func__, __LINE__, total_entry);
     wifi_util_dbg_print(WIFI_MGR,"%s:%d mac total entry:%d\r\n", __func__, __LINE__, total_entry);
     while (total_entry > 0) {
         index = data_index[total_entry - 1];
@@ -8757,6 +8758,7 @@ void get_psm_mac_list_entry(unsigned int instance_number, char *l_vap_name, unsi
         free(temp_psm_mac_param);
         total_entry--;
     }
+    wifi_util_info_print(WIFI_CTRL, "RTesting: CID: 330422: %s:%d Exit\n", __func__, __LINE__);
 }
 
 int get_vap_params_from_psm(unsigned int vap_index, wifi_vap_info_t *vap_config,

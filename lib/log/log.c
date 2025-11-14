@@ -517,7 +517,9 @@ void mlog(log_severity_t sev,
 
     // Save errno, so that log does not overwrite it
     int save_errno = errno;
-    
+
+    printf("RTesting: CID: 68209, 340062: %s:%d Enter\n", __func__, __LINE__);
+
     if (false == log_enabled) {
         return;
     }
@@ -591,6 +593,7 @@ void mlog(log_severity_t sev,
     // restore saved errno value
     errno = save_errno;
 
+    printf("RTesting: CID: 68209, 340062: %s:%d Exit\n", __func__, __LINE__);
     return;
 }
 

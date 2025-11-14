@@ -197,6 +197,7 @@ static void deviceConnectHandler(rbusHandle_t handle, rbusEvent_t const *event,
     uint8_t const *data_ptr;
     mac_address_t sta_mac;
 
+    WIFI_EVENT_CONSUMER_DGB("RTesting: CID: 185773: %s:%d Enter\n", __func__, __LINE__);
     if (!event ||
         (sscanf(subscription->eventName, "Device.WiFi.AccessPoint.%d.X_RDK_deviceConnected",
              &vap) != 1)) {
@@ -218,6 +219,7 @@ static void deviceConnectHandler(rbusHandle_t handle, rbusEvent_t const *event,
         }
     }
     UNREFERENCED_PARAMETER(handle);
+    WIFI_EVENT_CONSUMER_DGB("RTesting: CID: 185773: %s:%d Exit\n", __func__, __LINE__);
 }
 
 static void deviceDisonnectHandler(rbusHandle_t handle, rbusEvent_t const *event,
@@ -228,6 +230,7 @@ static void deviceDisonnectHandler(rbusHandle_t handle, rbusEvent_t const *event
     uint8_t const *data_ptr;
     mac_address_t sta_mac;
 
+    WIFI_EVENT_CONSUMER_DGB("RTesting: CID: 185775: %s:%d Enter\n", __func__, __LINE__);
     if (!event ||
         (sscanf(subscription->eventName, "Device.WiFi.AccessPoint.%d.X_RDK_deviceDisconnected",
              &vap) != 1)) {
@@ -249,6 +252,7 @@ static void deviceDisonnectHandler(rbusHandle_t handle, rbusEvent_t const *event
         }
     }
     UNREFERENCED_PARAMETER(handle);
+    WIFI_EVENT_CONSUMER_DGB("RTesting: CID: 185775: %s:%d Exit\n", __func__, __LINE__);
 }
 
 static void deviceDeauthHandler(rbusHandle_t handle, rbusEvent_t const *event,
@@ -1060,6 +1064,7 @@ int main(int argc, char *argv[])
     g_pid = getpid();
     snprintf(g_component_name, RBUS_MAX_NAME_LENGTH, "%s%d", "WifiEventConsumer", g_pid);
 
+    printf("RTesting: CID: 186354: %s:%d Enter\n", __func__, __LINE__);
     rc = rbus_open(&g_handle, g_component_name);
     if (rc != RBUS_ERROR_SUCCESS) {
         printf("consumer: rbus_open failed: %d\n", rc);

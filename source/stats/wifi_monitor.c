@@ -2287,6 +2287,8 @@ static void send_ping_data(int ap_idx, unsigned char *mac, char *client_ip, char
     char        src_ip_str[IP_STR_LEN] = { 0 }; // CID: 281871
     char        cli_ip_str[IP_STR_LEN] = { 0 };
 
+    wifi_util_info_print(WIFI_MON, "RTesting: CID: 281871: %s:%d Enter\n", __func__, __LINE__);
+
     if(mac == NULL ) {
         wifi_util_error_print(WIFI_MON, "%s: Mac is NULL\n",__func__);
         return;
@@ -2381,6 +2383,7 @@ static void send_ping_data(int ap_idx, unsigned char *mac, char *client_ip, char
 #endif
         }
     }
+    wifi_util_info_print(WIFI_MON, "RTesting: CID: 281871: %s:%d Exit\n", __func__, __LINE__);
 }
 
 static int update_pinger_map(int ap_index, mac_addr_t mac_addr, bool remove)

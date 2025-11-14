@@ -58,6 +58,7 @@ void process_eap_data(wifi_8021x_data_t *data, wifi_8021x_t *module, bool new_ev
     to_mac_str(data->mac, mac_str);
     str_tolower(mac_str);
 
+    wifi_util_info_print(WIFI_MON, "RTesting: CID: 162976: %s:%d Enter\n", __func__, __LINE__);
     if (new_event == false) {
         // this is an existing data, call originated from timeout
         if ((tnow.tv_sec - data->packet_time.tv_sec) > 2) {
@@ -135,6 +136,7 @@ void process_eap_data(wifi_8021x_data_t *data, wifi_8021x_t *module, bool new_ev
     }
 
     wifi_util_dbg_print(WIFI_MON, "%s:%d: Received eap %s  id:%d diretion:%s\n", __func__, __LINE__, msg, eap->id, direction);
+    wifi_util_info_print(WIFI_MON, "RTesting: CID: 162976: %s:%d Exit\n", __func__, __LINE__);
 }
 
 void process_assoc_req_packet(wifi_assoc_req_data_t *assoc_data, wifi_8021x_t *module)

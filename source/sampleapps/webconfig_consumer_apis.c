@@ -1963,6 +1963,7 @@ int decode_pcap(webconfig_consumer_t *consumer, unsigned int vap_index, char *fi
 
     frame_data_t frame_data = { 0 }; // CID: 334036
 
+    printf("RTesting: CID: 334036: %s:%d Enter\n", __func__, __LINE__);
     rbusEvent_t event;
     rbusObject_t rdata;
     rbusValue_t value;
@@ -2097,6 +2098,7 @@ int decode_pcap(webconfig_consumer_t *consumer, unsigned int vap_index, char *fi
     fclose(fp);
 
     printf("%s:%d: Frames Parsed: %d\n", __func__, __LINE__, frames_parsed);
+    printf("RTesting: CID: 334036: %s:%d Exit\n", __func__, __LINE__);
     return 0;
 }
 
