@@ -22,6 +22,7 @@
 #include <stdarg.h>
 #include <pthread.h>
 #include <unistd.h>
+#include <limits.h>
 #include "collection.h"
 #include "wifi_webconfig.h"
 #include "wifi_util.h"
@@ -236,14 +237,14 @@ webconfig_error_t decode_mesh_backhaul_sta_subdoc(webconfig_t *config, webconfig
         obj_vap = cJSON_GetArrayItem(obj_vaps, i);
         name = cJSON_GetStringValue(cJSON_GetObjectItem(obj_vap, "VapName"));
         radio_index = convert_vap_name_to_radio_array_index(&params->hal_cap.wifi_prop, name);
-        if (radio_index == RETURN_ERR) {
+        if (radio_index == UINT_MAX) {
             wifi_util_error_print(WIFI_WEBCONFIG, "%s:%d: Invalid radio index\n",
                 __func__, __LINE__);
             cJSON_Delete(json);
             return webconfig_error_decode;
         }
         vap_array_index = convert_vap_name_to_array_index(&params->hal_cap.wifi_prop, name);
-        if (vap_array_index == -1) {
+        if (vap_array_index == UINT_MAX) {
             wifi_util_error_print(WIFI_WEBCONFIG, "%s:%d: Invalid VAP index\n",
                 __func__, __LINE__);
             cJSON_Delete(json);
