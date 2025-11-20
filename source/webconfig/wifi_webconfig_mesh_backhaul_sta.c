@@ -236,7 +236,20 @@ webconfig_error_t decode_mesh_backhaul_sta_subdoc(webconfig_t *config, webconfig
         obj_vap = cJSON_GetArrayItem(obj_vaps, i);
         name = cJSON_GetStringValue(cJSON_GetObjectItem(obj_vap, "VapName"));
         radio_index = convert_vap_name_to_radio_array_index(&params->hal_cap.wifi_prop, name);
+        if (radio_index == RETURN_ERR) {
+            wifi_util_error_print(WIFI_WEBCONFIG, "%s:%d: Invalid radio index\n",
+                __func__, __LINE__);
+            cJSON_Delete(json);
+            return webconfig_error_decode;
+        }
         vap_array_index = convert_vap_name_to_array_index(&params->hal_cap.wifi_prop, name);
+        if (vap_array_index == -1) {
+            wifi_util_error_print(WIFI_WEBCONFIG, "%s:%d: Invalid VAP index\n",
+                __func__, __LINE__);
+            cJSON_Delete(json);
+            return webconfig_error_decode;
+        }
+
         vap_info = &params->radios[radio_index].vaps.vap_map.vap_array[vap_array_index];
         rdk_vap_info = &params->radios[radio_index].vaps.rdk_vap_array[vap_array_index];
 

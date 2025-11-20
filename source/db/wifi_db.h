@@ -119,7 +119,7 @@ typedef struct {
 //updated in the managers.init if opensync code 
 #define ONEWIFI_SCHEMA_DEF_VERSION 100007 
 #define WIFIDB_CONSOLIDATED_PATH "/var/run/openvswitch/db.sock"
-#define BUFFER_LENGTH_WIFIDB 32
+#define BUFFER_LENGTH_WIFIDB 16
 
 #define LNF_PRIMARY_RADIUS_IP      "127.0.0.1"
 #define LNF_SECONDARY_RADIUS_IP    "192.168.106.254"

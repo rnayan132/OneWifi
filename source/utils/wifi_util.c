@@ -1618,14 +1618,14 @@ int hw_mode_conversion(wifi_ieee80211Variant_t *hw_mode_enum, char *hw_mode, int
         return RETURN_ERR;
     }
     if (conv_type == STRING_TO_ENUM) {
-        for (i = 0; i < ARRAY_SIZE(arr_str); i++) {
+        for (i = 0; i < (ARRAY_SIZE(arr_str) - 1); i++) {
             if (strcmp(arr_str[i], hw_mode) == 0) {
                 *hw_mode_enum = arr_enum[i];
                 return RETURN_OK;
             }
         }
     } else if (conv_type == ENUM_TO_STRING) {
-        for (i = 0; i < ARRAY_SIZE(arr_enum); i++) {
+        for (i = 0; i < (ARRAY_SIZE(arr_enum) - 1); i++) {
             if ((arr_enum[i] & *hw_mode_enum) == arr_enum[i]) {
                 snprintf(hw_mode, hw_mode_len, "%s", arr_str[i]);
                 is_mode_valid = true;
