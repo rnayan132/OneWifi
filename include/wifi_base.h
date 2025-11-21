@@ -842,7 +842,7 @@ typedef struct {
 
 #define RADIO_NAME_LENGTH 16
 typedef struct {
-    char    name[RADIO_NAME_LEN];
+    char    name[RADIO_NAME_LENGTH];
     wifi_radio_operationParam_t oper;
     rdk_wifi_vap_map_t          vaps;
     wifi_radio_feature_param_t  feature;
