@@ -69,7 +69,7 @@ webconfig_error_t decode_wifiapivap_subdoc(webconfig_t *config, webconfig_subdoc
     cJSON *obj_vaps;
     cJSON *obj_vap;
     unsigned int i, size, vap_array_index, radio_index = 0;
-    unsigned int blob_radio_index = 0, vap_mode = 0;
+    unsigned int blob_radio_index = 0, vap_mode = 0; // CID: 334411
     const cJSON  *obj_vap_mode;
     char *name;
     wifi_vap_info_t *vap_info;
@@ -80,6 +80,7 @@ webconfig_error_t decode_wifiapivap_subdoc(webconfig_t *config, webconfig_subdoc
     params = &data->u.decoded;
     doc = &config->subdocs[data->type];
 
+    wifi_util_info_print(WIFI_WEBCONFIG, "%s:%d: RTesting :CID: 334411 Enter\n", __func__, __LINE__);
     //memset(params, 0, sizeof(webconfig_subdoc_decoded_data_t));
 
     for (i = 0; i < doc->num_objects; i++) {
@@ -166,6 +167,7 @@ webconfig_error_t decode_wifiapivap_subdoc(webconfig_t *config, webconfig_subdoc
     
     wifi_util_info_print(WIFI_WEBCONFIG, "%s:%d: decode success\n", __func__, __LINE__);
 
+    wifi_util_info_print(WIFI_WEBCONFIG, "%s:%d: RTesting :CID: 334411 Exit\n", __func__, __LINE__);
     cJSON_Delete(json);
     return webconfig_error_none;
 }

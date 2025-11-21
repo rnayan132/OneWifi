@@ -1613,12 +1613,13 @@ int hw_mode_conversion(wifi_ieee80211Variant_t *hw_mode_enum, char *hw_mode, int
     };
     bool is_mode_valid = false;
 
+    wifi_util_info_print(WIFI_WEBCONFIG, "%s:%d: RTesting :CID: 407816 Enter\n", __func__, __LINE__);
     unsigned int i = 0;
     if ((hw_mode_enum == NULL) || (hw_mode == NULL)) {
         return RETURN_ERR;
     }
     if (conv_type == STRING_TO_ENUM) {
-        for (i = 0; i < (ARRAY_SIZE(arr_str) - 1); i++) {
+        for (i = 0; i < (ARRAY_SIZE(arr_str) - 1); i++) { // CID: 407816 cid not opened
             if (strcmp(arr_str[i], hw_mode) == 0) {
                 *hw_mode_enum = arr_enum[i];
                 return RETURN_OK;
@@ -1636,6 +1637,7 @@ int hw_mode_conversion(wifi_ieee80211Variant_t *hw_mode_enum, char *hw_mode, int
             return RETURN_OK;
         }
     }
+    wifi_util_info_print(WIFI_WEBCONFIG, "%s:%d: RTesting :CID: 407816 Exit\n", __func__, __LINE__);
 
     return RETURN_ERR;
 }

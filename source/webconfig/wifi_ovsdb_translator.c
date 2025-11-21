@@ -3894,10 +3894,11 @@ webconfig_error_t translate_ovsdb_to_blaster_info_common(const struct schema_Wif
         return webconfig_error_translate_from_ovsdb;
     }
 
+    wifi_util_info_print(WIFI_WEBCONFIG, "%s:%d: RTesting :CID: 340523 Enter\n", __func__, __LINE__);
     unsigned int mqtt_len = 0;
     mqtt_len = strlen(blaster_mqtt_topic);
     memset(blaster_info, 0, sizeof(active_msmt_t));
-    snprintf((char *)blaster_info->PlanId, sizeof(blaster_info->PlanId), "%s", blaster_row->plan_id);
+    snprintf((char *)blaster_info->PlanId, sizeof(blaster_info->PlanId), "%s", blaster_row->plan_id); // CID: 340523
 
     blaster_info->ActiveMsmtNumberOfSamples = blaster_row->blast_sample_count;
     blaster_info->ActiveMsmtSampleDuration = blaster_row->blast_duration;
@@ -3923,6 +3924,7 @@ webconfig_error_t translate_ovsdb_to_blaster_info_common(const struct schema_Wif
             snprintf((char *)blaster_info->blaster_mqtt_topic, mqtt_len, "%s", blaster_mqtt_topic);
         }    
     }
+    wifi_util_info_print(WIFI_WEBCONFIG, "%s:%d: RTesting :CID: 340523 Exit\n", __func__, __LINE__);
     return webconfig_error_none;
 }
 
@@ -5355,6 +5357,7 @@ webconfig_error_t   translate_radio_object_from_ovsdb_radio_config_for_dml(webco
     unsigned int presence_mask = 0;
     wifi_util_dbg_print(WIFI_WEBCONFIG, "%s:%d: Enter\n", __func__, __LINE__);
 
+    wifi_util_info_print(WIFI_WEBCONFIG, "%s:%d: RTesting: CID: 277571 Enter\n", __func__, __LINE__);
     // From ovsdb structure to webconfig
     decoded_params = &data->u.decoded;
     if (decoded_params == NULL) {
@@ -5402,7 +5405,7 @@ webconfig_error_t   translate_radio_object_from_ovsdb_radio_config_for_dml(webco
             return webconfig_error_translate_from_ovsdb;
 
         }
-        convert_radio_index_to_radio_name(radio_index, decoded_params->radios[radio_index].name);
+        convert_radio_index_to_radio_name(radio_index, decoded_params->radios[radio_index].name); // CID: 277571
         presence_mask |= (1 << radio_index);
     }
 
@@ -5411,6 +5414,7 @@ webconfig_error_t   translate_radio_object_from_ovsdb_radio_config_for_dml(webco
         return webconfig_error_invalid_subdoc;
     }
 
+    wifi_util_info_print(WIFI_WEBCONFIG, "%s:%d: RTesting: CID: 277571 Exit\n", __func__, __LINE__);
 
     return webconfig_error_none;
 }
@@ -5500,6 +5504,8 @@ webconfig_error_t   translate_radio_object_from_ovsdb_radio_config_for_radio(web
     rdk_wifi_radio_t *radio;
     wifi_util_dbg_print(WIFI_WEBCONFIG, "%s:%d: Enter\n", __func__, __LINE__);
 
+    wifi_util_info_print(WIFI_WEBCONFIG, "%s:%d: RTesting :CID: 277292 Enter\n", __func__, __LINE__);
+
     // From ovsdb structure to webconfig
     decoded_params = &data->u.decoded;
     if (decoded_params == NULL) {
@@ -5545,7 +5551,7 @@ webconfig_error_t   translate_radio_object_from_ovsdb_radio_config_for_radio(web
 
         oper_param = &radio->oper;
 
-        convert_radio_index_to_radio_name(radio_index, radio->name);
+        convert_radio_index_to_radio_name(radio_index, radio->name); // CID: 277292
         if (translate_radio_object_from_ovsdb(row, oper_param, &decoded_params->hal_cap.wifi_prop) != webconfig_error_none) {
             wifi_util_error_print(WIFI_WEBCONFIG,"%s:%d: Unable to translate ovsdb to radio_object for %d\n", __func__, __LINE__, radio_index);
             return webconfig_error_translate_from_ovsdb;
@@ -5559,6 +5565,7 @@ webconfig_error_t   translate_radio_object_from_ovsdb_radio_config_for_radio(web
         return webconfig_error_invalid_subdoc;
     }
 
+    wifi_util_info_print(WIFI_WEBCONFIG, "%s:%d: RTesting :CID: 277292 Exit\n", __func__, __LINE__);
     return webconfig_error_none;
 }
 

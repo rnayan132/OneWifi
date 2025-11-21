@@ -2318,6 +2318,8 @@ webconfig_error_t decode_wifi_global_config(const cJSON *global_cfg, wifi_global
 {
     const cJSON  *param;
 
+    wifi_util_info_print(WIFI_WEBCONFIG, "%s:%d RTesting CID: 306126 Enter\n", __func__, __LINE__);
+
     // NotifyWifiChanges
     decode_param_bool(global_cfg, "NotifyWifiChanges", param);
     global_info->notify_wifi_changes = (param->type & cJSON_True) ? true:false;
@@ -2378,7 +2380,7 @@ webconfig_error_t decode_wifi_global_config(const cJSON *global_cfg, wifi_global
 #ifndef EASY_MESH_NODE
     // WpsPin
     decode_param_string(global_cfg, "WpsPin", param);
-    snprintf(global_info->wps_pin, sizeof(global_info->wps_pin), "%s", param->valuestring);
+    snprintf(global_info->wps_pin, sizeof(global_info->wps_pin), "%s", param->valuestring); // CID: 306126
 #endif
 
     // BandsteeringEnable
@@ -2508,9 +2510,12 @@ webconfig_error_t decode_wifi_global_config(const cJSON *global_cfg, wifi_global
     //TxRxRateList
     decode_param_string(global_cfg, "TxRxRateList", param);
     snprintf(global_info->txrx_rate_list, sizeof(global_info->txrx_rate_list), "%s", param->valuestring);
+
+    wifi_util_info_print(WIFI_WEBCONFIG, "%s:%d RTesting CID: 306126 TxRx rate %s\n", __func__, __LINE__, global_info->txrx_rate_list);
 #endif
 
     wifi_util_dbg_print(WIFI_WEBCONFIG,"wifi global Parameters decode successfully\n");
+    wifi_util_info_print(WIFI_WEBCONFIG, "%s:%d RTesting CID: 306126 Exit\n", __func__, __LINE__);
     return webconfig_error_none;
 }
 
@@ -3382,6 +3387,8 @@ webconfig_error_t decode_associated_clients_object(webconfig_subdoc_data_t *data
 
     params = &data->u.decoded;
 
+    wifi_util_info_print(WIFI_WEBCONFIG, "%s:%d RTesting: CID: 413110 Entry\n", __func__, __LINE__);
+
     vaps_size = cJSON_GetArraySize(obj_vaps);
     if (vaps_size == 0) {
         wifi_util_error_print(WIFI_WEBCONFIG, "%s:%d: Invalid schema\n", __func__, __LINE__);
@@ -3496,7 +3503,7 @@ webconfig_error_t decode_associated_clients_object(webconfig_subdoc_data_t *data
                 return webconfig_error_decode;
             }
             snprintf(assoc_dev_data.conn_security.wpa_key_mgmt,
-                     sizeof(assoc_dev_data.conn_security.wpa_key_mgmt), "%s", tmp_string);
+                     sizeof(assoc_dev_data.conn_security.wpa_key_mgmt), "%s", tmp_string); // CID: 413110
 
             value_object = cJSON_GetObjectItem(assoc_client, "PairwiseCipher");
             if ((value_object == NULL) || (cJSON_IsString(value_object) == false)) {
@@ -3743,6 +3750,7 @@ webconfig_error_t decode_associated_clients_object(webconfig_subdoc_data_t *data
             }
         }
     }
+    wifi_util_info_print(WIFI_WEBCONFIG, "%s:%d RTesting: CID: 413110 Exit\n", __func__, __LINE__);
 
     return webconfig_error_none;
 }
@@ -5035,6 +5043,7 @@ webconfig_error_t decode_radio_channel_radio_stats_object(wifi_provider_response
     radio_chan_data_t *chan_data = NULL;
     wifi_neighborScanMode_t scan_mode;
 
+    wifi_util_info_print(WIFI_WEBCONFIG, "%s:%d: RTesting :CID: 420482 Enter\n", __func__, __LINE__);
     if (json == NULL || chan_stats == NULL) {
         wifi_util_error_print(WIFI_WEBCONFIG,"%s:%d: cjson || chan_stats is NULL\n", __func__, __LINE__);
         return webconfig_error_decode;
@@ -5069,7 +5078,7 @@ webconfig_error_t decode_radio_channel_radio_stats_object(wifi_provider_response
 
     chan_data = (radio_chan_data_t*) malloc(sizeof(radio_chan_data_t) * size);
     if (chan_data == NULL) {
-        free(*chan_stats);
+        free(*chan_stats);  // CID: 420482
         *chan_stats = NULL;
         wifi_util_error_print(WIFI_WEBCONFIG, "%s:%d Failed to allocate memory\n", __func__, __LINE__);
         return webconfig_error_decode;
@@ -5124,6 +5133,7 @@ webconfig_error_t decode_radio_channel_radio_stats_object(wifi_provider_response
     (*chan_stats)->stat_pointer = chan_data;
     (*chan_stats)->stat_array_size = size;
 
+    wifi_util_info_print(WIFI_WEBCONFIG, "%s:%d: RTesting :CID: 420482 Exit\n", __func__, __LINE__);
     return webconfig_error_none;
 }
 
@@ -5135,6 +5145,7 @@ webconfig_error_t decode_radio_neighbor_stats_object(wifi_provider_response_t **
     int size = 0;
     wifi_neighbor_ap2_t *neighbor_stats_data = NULL;
     wifi_neighborScanMode_t scan_mode;
+    wifi_util_info_print(WIFI_WEBCONFIG, "%s:%d: RTesting :CID: 428192 Enter\n", __func__, __LINE__);
 
     if (json == NULL || chan_stats == NULL) {
         wifi_util_error_print(WIFI_WEBCONFIG,"%s:%d: cjson || chan_stats is NULL\n", __func__, __LINE__);
@@ -5176,7 +5187,7 @@ webconfig_error_t decode_radio_neighbor_stats_object(wifi_provider_response_t **
     } else {
         neighbor_stats_data = (wifi_neighbor_ap2_t*) malloc(sizeof(wifi_neighbor_ap2_t) * size);
         if (neighbor_stats_data == NULL) {
-            free(*chan_stats);
+            free(*chan_stats); // CID: 428192
             *chan_stats = NULL;
             wifi_util_error_print(WIFI_WEBCONFIG, "%s:%d Failed to allocate memory\n", __func__, __LINE__);
             return webconfig_error_decode;
@@ -5250,6 +5261,7 @@ webconfig_error_t decode_radio_neighbor_stats_object(wifi_provider_response_t **
     (*chan_stats)->stat_pointer = neighbor_stats_data;
     (*chan_stats)->stat_array_size = size;
 
+    wifi_util_info_print(WIFI_WEBCONFIG, "%s:%d: RTesting :CID: 428192 Exit\n", __func__, __LINE__);
     return webconfig_error_none;
 }
 
@@ -5388,6 +5400,8 @@ webconfig_error_t decode_assocdev_stats_object(wifi_provider_response_t **assoc_
     int size = 0;
     wifi_associated_dev3_t *client_stats_data = NULL;
 
+    wifi_util_info_print(WIFI_WEBCONFIG, "%s:%d: RTesting :CID: 428819 Enter\n", __func__, __LINE__);
+
     if (json == NULL || assoc_stats == NULL) {
         wifi_util_error_print(WIFI_WEBCONFIG, "%s:%d: cjson || assoc_stats is NULL\n", __func__, __LINE__);
         return webconfig_error_decode;
@@ -5436,7 +5450,7 @@ webconfig_error_t decode_assocdev_stats_object(wifi_provider_response_t **assoc_
     for (int count = 0; count < size; count++) {
         assoc_data = cJSON_GetArrayItem(assoc_stats_arr, count);
         if (assoc_data == NULL) {
-            free(client_stats_data);
+            free(client_stats_data); // CID: 428819
             free(*assoc_stats);
             *assoc_stats = NULL;
             wifi_util_error_print(WIFI_WEBCONFIG, "%s:%d: null Json Pointer for : %d \n", __func__,
@@ -5558,6 +5572,7 @@ webconfig_error_t decode_assocdev_stats_object(wifi_provider_response_t **assoc_
     (*assoc_stats)->stat_pointer = client_stats_data;
     (*assoc_stats)->stat_array_size = size;
 
+    wifi_util_info_print(WIFI_WEBCONFIG, "%s:%d: RTesting :CID: 428819 Exit\n", __func__, __LINE__);
     return webconfig_error_none;
 }
 
@@ -5569,6 +5584,7 @@ webconfig_error_t decode_radiodiag_stats_object(wifi_provider_response_t **diag_
     int size = 0;
     radio_data_t *diagnostic_data = NULL;
 
+    wifi_util_info_print(WIFI_WEBCONFIG, "%s:%d: RTesting :CID: 428820 Enter\n", __func__, __LINE__);
     if (json == NULL || diag_stats) {
         wifi_util_error_print(WIFI_WEBCONFIG,"%s:%d: cjson || diag_stats is NULL\n", __func__, __LINE__);
         return webconfig_error_decode;
@@ -5593,7 +5609,7 @@ webconfig_error_t decode_radiodiag_stats_object(wifi_provider_response_t **diag_
 
     diagnostic_data = (radio_data_t*) malloc(sizeof(radio_data_t) * size);
     if (diagnostic_data == NULL) {
-        free(*diag_stats);
+        free(*diag_stats); // CID: 428820
         *diag_stats = NULL;
         wifi_util_error_print(WIFI_WEBCONFIG, "%s:%d Failed to allocate memory\n", __func__, __LINE__);
         return webconfig_error_decode;
@@ -5678,6 +5694,7 @@ webconfig_error_t decode_radiodiag_stats_object(wifi_provider_response_t **diag_
     (*diag_stats)->stat_pointer = diagnostic_data;
     (*diag_stats)->stat_array_size = size;
 
+    wifi_util_info_print(WIFI_WEBCONFIG, "%s:%d: RTesting :CID: 428820 Exit\n", __func__, __LINE__);
     return webconfig_error_none;
 }
 
@@ -5689,6 +5706,7 @@ webconfig_error_t decode_radio_temperature_stats_object(wifi_provider_response_t
     int size = 0;
     radio_data_t *temperature_data = NULL;
 
+    wifi_util_info_print(WIFI_WEBCONFIG, "%s:%d: RTesting :CID: 428821 Enter\n", __func__, __LINE__);
     if (json == NULL || temp_stats == NULL) {
         wifi_util_error_print(WIFI_WEBCONFIG,"%s:%d: cjson || temp_stats is NULL\n", __func__, __LINE__);
         return webconfig_error_decode;
@@ -5713,7 +5731,7 @@ webconfig_error_t decode_radio_temperature_stats_object(wifi_provider_response_t
 
     temperature_data = (radio_data_t*) malloc(sizeof(radio_data_t) * size);
     if (temperature_data == NULL) {
-        free(*temp_stats);
+        free(*temp_stats); // CID: 428821
         *temp_stats = NULL;
         wifi_util_error_print(WIFI_WEBCONFIG, "%s:%d Failed to allocate memory\n", __func__, __LINE__);
         return webconfig_error_decode;
@@ -5735,6 +5753,7 @@ webconfig_error_t decode_radio_temperature_stats_object(wifi_provider_response_t
     (*temp_stats)->stat_pointer = temperature_data;
     (*temp_stats)->stat_array_size = size;
 
+    wifi_util_info_print(WIFI_WEBCONFIG, "%s:%d: RTesting :CID: 428821 Exit\n", __func__, __LINE__);
     return webconfig_error_none;
 }
 

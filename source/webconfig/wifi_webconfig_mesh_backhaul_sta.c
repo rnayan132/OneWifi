@@ -167,6 +167,7 @@ webconfig_error_t decode_mesh_backhaul_sta_subdoc(webconfig_t *config, webconfig
     params = &data->u.decoded;
     doc = &config->subdocs[data->type];
 
+    wifi_util_info_print(WIFI_WEBCONFIG, "%s:%d: RTesting :CID: 334921, 334923 Enter\n", __func__, __LINE__);
     /* get list of mesh_sta SSID */
     num_mesh_ssid = get_list_of_mesh_sta(&params->hal_cap.wifi_prop, MAX_NUM_RADIOS, vap_names);
 
@@ -237,7 +238,7 @@ webconfig_error_t decode_mesh_backhaul_sta_subdoc(webconfig_t *config, webconfig
         obj_vap = cJSON_GetArrayItem(obj_vaps, i);
         name = cJSON_GetStringValue(cJSON_GetObjectItem(obj_vap, "VapName"));
         radio_index = convert_vap_name_to_radio_array_index(&params->hal_cap.wifi_prop, name);
-        if (radio_index == UINT_MAX) {
+        if (radio_index == UINT_MAX) { // CID: 334921, 334923
             wifi_util_error_print(WIFI_WEBCONFIG, "%s:%d: Invalid radio index\n",
                 __func__, __LINE__);
             cJSON_Delete(json);
@@ -273,5 +274,6 @@ webconfig_error_t decode_mesh_backhaul_sta_subdoc(webconfig_t *config, webconfig
     wifi_util_info_print(WIFI_WEBCONFIG, "%s:%d: decode success\n", __func__, __LINE__);
     cJSON_Delete(json);
 
+    wifi_util_info_print(WIFI_WEBCONFIG, "%s:%d: RTesting :CID: 334921, 334923 Exit\n", __func__, __LINE__);
     return webconfig_error_none;
 }
