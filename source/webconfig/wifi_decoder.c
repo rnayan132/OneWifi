@@ -2378,8 +2378,7 @@ webconfig_error_t decode_wifi_global_config(const cJSON *global_cfg, wifi_global
 #ifndef EASY_MESH_NODE
     // WpsPin
     decode_param_string(global_cfg, "WpsPin", param);
-    strncpy(global_info->wps_pin, param->valuestring, sizeof(global_info->wps_pin) - 1);
-    global_info->wps_pin[sizeof(global_info->wps_pin) - 1] = '\0';
+    snprintf(global_info->wps_pin, sizeof(global_info->wps_pin), "%s", param->valuestring);
 #endif
 
     // BandsteeringEnable
@@ -2478,8 +2477,8 @@ webconfig_error_t decode_wifi_global_config(const cJSON *global_cfg, wifi_global
 #ifndef EASY_MESH_NODE
     //WifiRegionCode
     decode_param_string(global_cfg, "WifiRegionCode", param);
-    strncpy(global_info->wifi_region_code, param->valuestring, sizeof(global_info->wifi_region_code) - 1);
-    global_info->wifi_region_code[sizeof(global_info->wifi_region_code) - 1] = '\0';
+    snprintf(global_info->wifi_region_code,
+             sizeof(global_info->wifi_region_code), "%s", param->valuestring);
 
     // DiagnosticEnable
     decode_param_bool(global_cfg, "DiagnosticEnable", param);
@@ -2495,23 +2494,20 @@ webconfig_error_t decode_wifi_global_config(const cJSON *global_cfg, wifi_global
 
     //NormalizedRssiList
     decode_param_string(global_cfg, "NormalizedRssiList", param);
-    strncpy(global_info->normalized_rssi_list, param->valuestring, sizeof(global_info->normalized_rssi_list) - 1);
-    global_info->normalized_rssi_list[sizeof(global_info->normalized_rssi_list) - 1] = '\0';
+    snprintf(global_info->normalized_rssi_list,
+             sizeof(global_info->normalized_rssi_list), "%s", param->valuestring);
 
     //SNRList
     decode_param_string(global_cfg, "SNRList", param);
-    strncpy(global_info->snr_list, param->valuestring, sizeof(global_info->snr_list) - 1);
-    global_info->snr_list[sizeof(global_info->snr_list) - 1] = '\0';
+    snprintf(global_info->snr_list, sizeof(global_info->snr_list), "%s", param->valuestring);
 
     //CliStatList
     decode_param_string(global_cfg, "CliStatList", param);
-    strncpy(global_info->cli_stat_list, param->valuestring, sizeof(global_info->cli_stat_list) - 1);
-    global_info->cli_stat_list[sizeof(global_info->cli_stat_list) - 1] = '\0';
+    snprintf(global_info->cli_stat_list, sizeof(global_info->cli_stat_list), "%s", param->valuestring);
 
     //TxRxRateList
     decode_param_string(global_cfg, "TxRxRateList", param);
-    strncpy(global_info->txrx_rate_list, param->valuestring, sizeof(global_info->txrx_rate_list) - 1);
-    global_info->txrx_rate_list[sizeof(global_info->txrx_rate_list) - 1] = '\0';
+    snprintf(global_info->txrx_rate_list, sizeof(global_info->txrx_rate_list), "%s", param->valuestring);
 #endif
 
     wifi_util_dbg_print(WIFI_WEBCONFIG,"wifi global Parameters decode successfully\n");
@@ -3499,9 +3495,8 @@ webconfig_error_t decode_associated_clients_object(webconfig_subdoc_data_t *data
                 wifi_util_error_print(WIFI_WEBCONFIG, "%s:%d: NULL pointer \n", __func__, __LINE__);
                 return webconfig_error_decode;
             }
-            strncpy(assoc_dev_data.conn_security.wpa_key_mgmt, tmp_string, sizeof(assoc_dev_data.conn_security.wpa_key_mgmt) - 1);
-            assoc_dev_data.conn_security.wpa_key_mgmt[sizeof(assoc_dev_data.conn_security.wpa_key_mgmt) - 1] = '\0';
-
+            snprintf(assoc_dev_data.conn_security.wpa_key_mgmt,
+                     sizeof(assoc_dev_data.conn_security.wpa_key_mgmt), "%s", tmp_string);
 
             value_object = cJSON_GetObjectItem(assoc_client, "PairwiseCipher");
             if ((value_object == NULL) || (cJSON_IsString(value_object) == false)) {
@@ -3514,10 +3509,8 @@ webconfig_error_t decode_associated_clients_object(webconfig_subdoc_data_t *data
                 wifi_util_error_print(WIFI_WEBCONFIG, "%s:%d: NULL pointer \n", __func__, __LINE__);
                 return webconfig_error_decode;
             }
-            strncpy(assoc_dev_data.conn_security.pairwise_cipher, tmp_string,
-                sizeof(assoc_dev_data.conn_security.pairwise_cipher) - 1);
-            assoc_dev_data.conn_security.pairwise_cipher[sizeof(assoc_dev_data.conn_security.pairwise_cipher) - 1] = '\0';
-
+            snprintf(assoc_dev_data.conn_security.pairwise_cipher,
+                     sizeof(assoc_dev_data.conn_security.pairwise_cipher), "%s", tmp_string);
 
             value_object = cJSON_GetObjectItem(assoc_client, "AuthenticationState");
             if ((value_object == NULL) || (cJSON_IsBool(value_object) == false)) {

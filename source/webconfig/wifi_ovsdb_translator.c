@@ -3897,8 +3897,8 @@ webconfig_error_t translate_ovsdb_to_blaster_info_common(const struct schema_Wif
     unsigned int mqtt_len = 0;
     mqtt_len = strlen(blaster_mqtt_topic);
     memset(blaster_info, 0, sizeof(active_msmt_t));
-    strncpy((char *)blaster_info->PlanId, blaster_row->plan_id, sizeof(blaster_info->PlanId) - 1);
-    blaster_info->PlanId[sizeof(blaster_info->PlanId) - 1] = '\0';
+    snprintf(blaster_info->PlanId, sizeof(blaster_info->PlanId), "%s", blaster_row->plan_id);
+
     blaster_info->ActiveMsmtNumberOfSamples = blaster_row->blast_sample_count;
     blaster_info->ActiveMsmtSampleDuration = blaster_row->blast_duration;
     blaster_info->ActiveMsmtPktSize = blaster_row->blast_packet_size;
