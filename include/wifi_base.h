@@ -840,8 +840,9 @@ typedef struct {
     int ap_reason_counts[9];
 } interop_data_t;
 
+#define RADIO_NAME_LENGTH 16
 typedef struct {
-    char    name[16];
+    char    name[RADIO_NAME_LENGTH];
     wifi_radio_operationParam_t oper;
     rdk_wifi_vap_map_t          vaps;
     wifi_radio_feature_param_t  feature;
