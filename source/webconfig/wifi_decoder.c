@@ -5585,7 +5585,7 @@ webconfig_error_t decode_radiodiag_stats_object(wifi_provider_response_t **diag_
     radio_data_t *diagnostic_data = NULL;
 
     wifi_util_info_print(WIFI_WEBCONFIG, "%s:%d: RTesting :CID: 428820 Enter\n", __func__, __LINE__);
-    if (json == NULL || diag_stats) {
+    if (json == NULL || diag_stats == NULL) {
         wifi_util_error_print(WIFI_WEBCONFIG,"%s:%d: cjson || diag_stats is NULL\n", __func__, __LINE__);
         return webconfig_error_decode;
     }
