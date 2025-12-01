@@ -95,6 +95,7 @@ static elem_node_map_t *insert_table_row(elem_node_map_t *table_root, char *node
     VERIFY_NULL_WITH_RETURN_ADDR(node_name);
 
     next_node = current_node->child;
+    wifi_util_info_print(WIFI_BUS, "%s:%d RTesting: CID: 433799 Entry\n", __func__, __LINE__);
 
     while(next_node != NULL)
     {
@@ -123,6 +124,7 @@ static elem_node_map_t *insert_table_row(elem_node_map_t *table_root, char *node
                 }
                 wifi_util_dbg_print(WIFI_BUS,"Full name [%s]\r\n", buff);
                 snprintf(temp_node->full_name, sizeof(temp_node->full_name), "%s", buff); // CID: 433799
+                wifi_util_info_print(WIFI_BUS, "%s:%d RTesting: CID: 433799 full_name=%s\n", __func__, __LINE__, temp_node->full_name);
                 strncpy(temp_node->name, node_name, strlen(node_name) + 1);
                 current_node->nextSibling = temp_node;
                 current_node = temp_node;
@@ -132,6 +134,7 @@ static elem_node_map_t *insert_table_row(elem_node_map_t *table_root, char *node
         }
     }
 
+    wifi_util_info_print(WIFI_BUS, "%s:%d RTesting: CID: 433799 Exit\n", __func__, __LINE__);
     if (status == bus_error_success) {
         return current_node;
     }
@@ -242,6 +245,7 @@ elem_node_map_t* bus_insert_elem_node(elem_node_map_t* root, bus_mux_data_elem_t
     next_node = current_node->child;
     create_child = 1;
 
+    wifi_util_info_print(WIFI_BUS, "%s:%d RTesting: CID: 433803 Entry\n", __func__, __LINE__);
     wifi_util_info_print(WIFI_BUS,"Request to insert element [%s]!!\r\n", elem->full_name);
 
     strncpy(name, elem->full_name, strlen(elem->full_name) + 1);
@@ -348,6 +352,7 @@ elem_node_map_t* bus_insert_elem_node(elem_node_map_t* root, bus_mux_data_elem_t
             strncpy(rowTemplate->name, "{i}", strlen("{i}") + 1);
             snprintf(buff, sizeof(buff), "%s.%s", current_node->full_name, rowTemplate->name);
             snprintf(rowTemplate->full_name, sizeof(rowTemplate->full_name), "%s", buff); // CID: 433803
+            wifi_util_info_print(WIFI_BUS, "%s:%d RTesting: CID: 433803 full_name=%s\n", __func__, __LINE__, rowTemplate->full_name);
             current_node->child = rowTemplate;
 
             //bus_add_table_row(current_node, elem->num_of_table_row);
@@ -355,6 +360,7 @@ elem_node_map_t* bus_insert_elem_node(elem_node_map_t* root, bus_mux_data_elem_t
     }
     BUS_MUX_UNLOCK(get_bus_mux_mutex());
 
+    wifi_util_info_print(WIFI_BUS, "%s:%d RTesting: CID: 433803 Exit\n", __func__, __LINE__);
     if(ret == 0)
     {
         return current_node;
