@@ -955,7 +955,7 @@ webconfig_error_t translator_ovsdb_init(webconfig_subdoc_data_t *data)
 #endif
             }
             memset(ssid, 0, sizeof(ssid));
-            strcpy(default_vap_info->u.bss_info.ssid, default_vap_info->vap_name);
+            snprintf(default_vap_info->u.bss_info.ssid, sizeof(default_vap_info->u.bss_info.ssid), "%s", default_vap_info->vap_name); // CID: 306134
             memset(password, 0, sizeof(password));
             strcpy(default_vap_info->u.bss_info.security.u.key.key, INVALID_KEY);
             memset(wps_pin, 0, sizeof(wps_pin));
@@ -989,19 +989,19 @@ webconfig_error_t translator_ovsdb_init(webconfig_subdoc_data_t *data)
             strcpy(default_vap_info->u.bss_info.security.u.radius.key, INVALID_KEY);
             strcpy(default_vap_info->u.bss_info.security.u.radius.s_key, INVALID_KEY);
 
-            strcpy(default_vap_info->u.bss_info.ssid, default_vap_info->vap_name);
+            snprintf(default_vap_info->u.bss_info.ssid, sizeof(default_vap_info->u.bss_info.ssid), "%s", default_vap_info->vap_name);
             default_vap_info->u.bss_info.security.mode = wifi_security_mode_wpa2_enterprise;
         }   else if(is_vap_lnf_psk(&hal_cap->wifi_prop, vapIndex) == TRUE) {
             default_vap_info->u.bss_info.security.mode = wifi_security_mode_wpa2_personal;
             memset(ssid, 0, sizeof(ssid));
-            strcpy(default_vap_info->u.bss_info.ssid, default_vap_info->vap_name);
+            snprintf(default_vap_info->u.bss_info.ssid, sizeof(default_vap_info->u.bss_info.ssid), "%s", default_vap_info->vap_name);
             memset(password, 0, sizeof(password));
             strcpy(default_vap_info->u.bss_info.security.u.key.key, INVALID_KEY);
             default_vap_info->u.bss_info.showSsid = false;
         }   else if(is_vap_xhs(&hal_cap->wifi_prop, vapIndex) == TRUE) {
             default_vap_info->u.bss_info.security.mode = wifi_security_mode_wpa2_personal;
             memset(ssid, 0, sizeof(ssid));
-            strcpy(default_vap_info->u.bss_info.ssid, default_vap_info->vap_name);
+            snprintf(default_vap_info->u.bss_info.ssid, sizeof(default_vap_info->u.bss_info.ssid), "%s", default_vap_info->vap_name);
             memset(password, 0, sizeof(password));
             strcpy(default_vap_info->u.bss_info.security.u.key.key, INVALID_KEY);
             default_vap_info->u.bss_info.showSsid = false;
