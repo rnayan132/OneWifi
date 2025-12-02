@@ -285,7 +285,7 @@ elem_node_map_t* bus_insert_elem_node(elem_node_map_t* root, bus_mux_data_elem_t
                 else
                 {
                     snprintf(buff, sizeof(buff), "%s.%s", current_node->full_name, token);
-                    strncpy(temp_node->full_name, buff, strlen(buff) + 1);
+                    snprintf(temp_node->full_name, sizeof(temp_node->full_name), "%s", buff); // CID: 433803
                 }
                 strncpy(temp_node->name, token, strlen(token) + 1);
                 current_node->child = temp_node;
@@ -325,7 +325,7 @@ elem_node_map_t* bus_insert_elem_node(elem_node_map_t* root, bus_mux_data_elem_t
                         snprintf(buff, sizeof(buff), "%s", token);
                     }
                     wifi_util_dbg_print(WIFI_BUS,"Full name [%s]\n", buff);
-                    strncpy(temp_node->full_name, buff, strlen(buff) + 1);
+                    snprintf(temp_node->full_name, sizeof(temp_node->full_name), "%s", buff); // CID: 433803
                     strncpy(temp_node->name, token, strlen(token) + 1);
                     current_node->nextSibling = temp_node;
                     current_node = temp_node;
