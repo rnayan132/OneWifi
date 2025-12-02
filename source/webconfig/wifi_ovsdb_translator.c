@@ -800,13 +800,13 @@ webconfig_error_t translator_ovsdb_init(webconfig_subdoc_data_t *data)
     int vapIndex = 0;
     unsigned int radioIndx = 256; // some impossible values
     unsigned int vapArrayIndx = 256;
-    char wps_pin[128] = {0}; // CID: 306134 unused can be removed same for password ans ssid
-    char password[128] = {0};
-    char ssid[128] = {0};
+//    char wps_pin[128] = {0}; // CID: 306134 unused can be removed same for password ans ssid
+//    char password[128] = {0};
+//    char ssid[128] = {0};
     wifi_radio_operationParam_t  *oper_param;
     int band = 0;
 
-    wifi_util_info_print(WIFI_WEBCONFIG, "%s:%d RTesting: CID: 306134 Entry\n", __func__, __LINE__);
+    wifi_util_info_print(WIFI_WEBCONFIG, "%s:%d RTesting: CID: 306134 Entry GESL\n", __func__, __LINE__);
     decoded_params = &data->u.decoded;
     default_decoded_params = &webconfig_ovsdb_default_data.u.decoded;
 
@@ -955,15 +955,15 @@ webconfig_error_t translator_ovsdb_init(webconfig_subdoc_data_t *data)
                 default_vap_info->u.bss_info.security.mode = wifi_security_mode_wpa2_personal;
 #endif
             }
-            memset(ssid, 0, sizeof(ssid));
+//            memset(ssid, 0, sizeof(ssid));
             //snprintf(default_vap_info->u.bss_info.ssid, sizeof(default_vap_info->u.bss_info.ssid), "%s", default_vap_info->vap_name); // CID: 306134
             strncpy(default_vap_info->u.bss_info.ssid, default_vap_info->vap_name, sizeof(default_vap_info->u.bss_info.ssid) - 1);
             default_vap_info->u.bss_info.ssid[sizeof(default_vap_info->u.bss_info.ssid) - 1] = '\0';
 
             wifi_util_info_print(WIFI_WEBCONFIG, "%s:%d RTesting: CID: 306134 ssid=%s\n", __func__, __LINE__, default_vap_info->u.bss_info.ssid);
-            memset(password, 0, sizeof(password));
+//            memset(password, 0, sizeof(password));
             strcpy(default_vap_info->u.bss_info.security.u.key.key, INVALID_KEY);
-            memset(wps_pin, 0, sizeof(wps_pin));
+//            memset(wps_pin, 0, sizeof(wps_pin));
             strcpy(default_vap_info->u.bss_info.wps.pin, INVALID_KEY);
             default_vap_info->u.bss_info.showSsid = true;
             default_vap_info->u.bss_info.mbo_enabled = false;
@@ -973,9 +973,9 @@ webconfig_error_t translator_ovsdb_init(webconfig_subdoc_data_t *data)
             default_vap_info->u.bss_info.rapidReconnectEnable = false;
             default_vap_info->u.bss_info.security.mode = wifi_security_mode_wpa_personal;
             default_vap_info->u.bss_info.showSsid = false;
-            memset(ssid, 0, sizeof(ssid));
+//            memset(ssid, 0, sizeof(ssid));
             strcpy(default_vap_info->u.bss_info.ssid, "we.connect.yellowstone");
-            memset(password, 0, sizeof(password));
+//            memset(password, 0, sizeof(password));
             strcpy(default_vap_info->u.bss_info.security.u.key.key, INVALID_KEY);
             if (band == WIFI_FREQUENCY_6_BAND) {
                 default_vap_info->u.bss_info.security.mode = wifi_security_mode_wpa3_personal;
@@ -1002,24 +1002,24 @@ webconfig_error_t translator_ovsdb_init(webconfig_subdoc_data_t *data)
             default_vap_info->u.bss_info.security.mode = wifi_security_mode_wpa2_enterprise;
         }   else if(is_vap_lnf_psk(&hal_cap->wifi_prop, vapIndex) == TRUE) {
             default_vap_info->u.bss_info.security.mode = wifi_security_mode_wpa2_personal;
-            memset(ssid, 0, sizeof(ssid));
+//            memset(ssid, 0, sizeof(ssid));
             //snprintf(default_vap_info->u.bss_info.ssid, sizeof(default_vap_info->u.bss_info.ssid), "%s", default_vap_info->vap_name);
             strncpy(default_vap_info->u.bss_info.ssid, default_vap_info->vap_name, sizeof(default_vap_info->u.bss_info.ssid) - 1);
             default_vap_info->u.bss_info.ssid[sizeof(default_vap_info->u.bss_info.ssid) - 1] = '\0';
 
             wifi_util_info_print(WIFI_WEBCONFIG, "%s:%d RTesting: CID: 306134 ssid=%s\n", __func__, __LINE__, default_vap_info->u.bss_info.ssid);
-            memset(password, 0, sizeof(password));
+//            memset(password, 0, sizeof(password));
             strcpy(default_vap_info->u.bss_info.security.u.key.key, INVALID_KEY);
             default_vap_info->u.bss_info.showSsid = false;
         }   else if(is_vap_xhs(&hal_cap->wifi_prop, vapIndex) == TRUE) {
             default_vap_info->u.bss_info.security.mode = wifi_security_mode_wpa2_personal;
-            memset(ssid, 0, sizeof(ssid));
+//            memset(ssid, 0, sizeof(ssid));
             //snprintf(default_vap_info->u.bss_info.ssid, sizeof(default_vap_info->u.bss_info.ssid), "%s", default_vap_info->vap_name);
             strncpy(default_vap_info->u.bss_info.ssid, default_vap_info->vap_name, sizeof(default_vap_info->u.bss_info.ssid) - 1);
             default_vap_info->u.bss_info.ssid[sizeof(default_vap_info->u.bss_info.ssid) - 1] = '\0';
 
             wifi_util_info_print(WIFI_WEBCONFIG, "%s:%d RTesting: CID: 306134 ssid=%s\n", __func__, __LINE__, default_vap_info->u.bss_info.ssid);
-            memset(password, 0, sizeof(password));
+//            memset(password, 0, sizeof(password));
             strcpy(default_vap_info->u.bss_info.security.u.key.key, INVALID_KEY);
             default_vap_info->u.bss_info.showSsid = false;
             if (band == WIFI_FREQUENCY_6_BAND) {
