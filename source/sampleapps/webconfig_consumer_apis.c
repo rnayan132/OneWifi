@@ -1904,7 +1904,7 @@ int decode_802_11_frame(webconfig_consumer_t *consumer, unsigned int vap_index, 
     }
 
     memset(tmp_buff, 0, MAX_FRAME_SZ);
-    memset(frame_data.frame.data, 0, MAX_FRAME_SZ);
+    memset(frame_data.data, 0, MAX_FRAME_SZ); // CID: 334034
     while ((tmp = fgets(tmp_buff, MAX_FRAME_SZ, fp)) != NULL) {
         nlen = strlen(tmp);
         pos = 2;
