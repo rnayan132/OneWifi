@@ -1910,7 +1910,7 @@ int decode_802_11_frame(webconfig_consumer_t *consumer, unsigned int vap_index, 
         pos = 2;
         while (pos <= (nlen - 1)) {
             tmp_buff[pos] = 0;
-            sscanf(tmp, "%02hhx", (uint8_t *)&frame_data.frame.data[count]);
+            sscanf(tmp, "%02hhx", (uint8_t *)&frame_data.data[count]);
             count++; pos += 3; tmp += 3;
         }
         memset(tmp_buff, 0, MAX_FRAME_SZ);
