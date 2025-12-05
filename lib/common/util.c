@@ -1069,7 +1069,7 @@ char *file_get(const char *path)
     if ((fd = open(path, O_RDONLY)) < 0)
         goto err;
     while ((n = read(fd, hunk, sizeof(hunk))) > 0) {
-        if (!(nbuf = realloc(buf, (size += (size_t)(n) + 1)))
+        if (!(nbuf = realloc(buf, (size += (size_t)(n) + 1))))
             goto err_free;
         buf = nbuf;
         memcpy(buf + len, hunk, (size_t)n);
