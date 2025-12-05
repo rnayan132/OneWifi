@@ -1076,7 +1076,7 @@ char *file_get(const char *path)
         len += n;
         buf[len] = 0;
 
-        if (size > SIZE_MAX - n)
+        if (size > (SIZE_MAX - n - 1))
             goto err_free;
     }
     if (n < 0)
