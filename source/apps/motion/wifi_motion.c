@@ -1421,8 +1421,7 @@ void motion_csi_publish(mac_address_t mac_address, wifi_csi_dev_t *csi_dev_data,
     //Construct Header.
     unsigned int total_length, num_csi_clients, csi_data_length, curr_length = 0;
     time_t datetime;
-    char *header = csi_dev_data->header;
-    void *head = csi_dev_data->header;
+    char *header = &csi_dev_data->header[0];
 
     memcpy(header,"CSI", (strlen("CSI") + 1));
     curr_length = curr_length + strlen("CSI") + 1;
@@ -1447,7 +1446,7 @@ void motion_csi_publish(mac_address_t mac_address, wifi_csi_dev_t *csi_dev_data,
 
     size_t buffer_len = CSI_HEADER_SIZE + sizeof(wifi_csi_data_t);
 
-    do_pipe_publish(head, buffer_len, csi); // CID: 347849
+    do_pipe_publish(header, buffer_len, csi); // CID: 347849
     return;
 }
 
