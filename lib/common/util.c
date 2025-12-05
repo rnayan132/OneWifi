@@ -1069,15 +1069,15 @@ char *file_get(const char *path)
     if ((fd = open(path, O_RDONLY)) < 0)
         goto err;
     while ((n = read(fd, hunk, sizeof(hunk))) > 0) {
+        if (size > (SIZE_MAX - n - 1))
+            goto err_free;
+
         if (!(nbuf = realloc(buf, (size_t)(size += n) + 1)))
             goto err_free;
         buf = nbuf;
         memcpy(buf + len, hunk, (size_t)n);
         len += n;
         buf[len] = 0;
-
-        if (size > (SIZE_MAX - n - 1))
-            goto err_free;
     }
     if (n < 0)
         goto err_free;
