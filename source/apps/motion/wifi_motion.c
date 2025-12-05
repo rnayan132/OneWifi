@@ -1446,7 +1446,7 @@ void motion_csi_publish(mac_address_t mac_address, wifi_csi_dev_t *csi_dev_data,
 
     size_t buffer_len = CSI_HEADER_SIZE + sizeof(wifi_csi_data_t);
 
-    do_pipe_publish(csi_dev_data->header, buffer_len, csi);
+    do_pipe_publish(header, buffer_len, csi); // CID: 347849
     return;
 }
 
