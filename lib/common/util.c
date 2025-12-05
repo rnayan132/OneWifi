@@ -1060,16 +1060,16 @@ err_close:
 char *file_get(const char *path)
 {
     ssize_t n;
-    ssize_t size = 0;
+    size_t size = 0;
     ssize_t len = 0;
     char *buf = NULL;
     char *nbuf = NULL;
-    char *hunk[4096];
+    char hunk[4096];
     int fd;
     if ((fd = open(path, O_RDONLY)) < 0)
         goto err;
     while ((n = read(fd, hunk, sizeof(hunk))) > 0) {
-        if (!(nbuf = realloc(buf, (size_t)(size += n) + 1)))
+        if (!(nbuf = realloc(buf, (size += (size_t)(n) + 1)))
             goto err_free;
         buf = nbuf;
         memcpy(buf + len, hunk, (size_t)n);
