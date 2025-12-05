@@ -1075,6 +1075,9 @@ char *file_get(const char *path)
         memcpy(buf + len, hunk, (size_t)n);
         len += n;
         buf[len] = 0;
+
+        if (size > SIZE_MAX - n)
+            goto err_free;
     }
     if (n < 0)
         goto err_free;
