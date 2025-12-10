@@ -3814,14 +3814,12 @@ webconfig_error_t decode_mac_object(rdk_wifi_vap_info_t *rdk_vap_info, cJSON *ob
         strncpy(acl_entry->device_name, tmp_device_name, sizeof(acl_entry->device_name)-1);
 
         if (decode_param_integer(mac_object, "reason", param) != webconfig_error_none) {
-            wifi_util_error_print(WIFI_WEBCONFIG, "%s:%d: decode Failed\n", __func__, __LINE__);
             free(acl_entry);
             return webconfig_error_decode;
         }
         acl_entry->reason = param->valuedouble;
 
         if (decode_param_integer(mac_object, "expiry_time", param) != webconfig_error_none) {
-            wifi_util_error_print(WIFI_WEBCONFIG, "%s:%d: decode Failed\n", __func__, __LINE__);
             free(acl_entry);
             return webconfig_error_decode;
         }
@@ -5112,10 +5110,7 @@ webconfig_error_t decode_radio_channel_radio_stats_object(wifi_provider_response
         radio_stats = cJSON_GetArrayItem(radio_stats_arr, count);
         if (radio_stats == NULL) {
             wifi_util_error_print(WIFI_WEBCONFIG, "%s:%d: null Json Pointer for : %d \n", __func__, __LINE__, count);
-            free(chan_data);
-            free(*chan_stats);
-            *chan_stats = NULL;
-            return webconfig_error_decode;
+            goto err_free;
         }
 
         if (decode_param_integer(radio_stats, "ChannelNumber", param) != webconfig_error_none) {
@@ -5258,10 +5253,7 @@ webconfig_error_t decode_radio_neighbor_stats_object(wifi_provider_response_t **
         neighbor_stats = cJSON_GetArrayItem(neighbor_stats_arr, count);
         if (neighbor_stats == NULL) {
             wifi_util_error_print(WIFI_WEBCONFIG, "%s:%d: null Json Pointer for : %d \n", __func__, __LINE__, count);
-            free(neighbor_stats_data);
-            free(*chan_stats);
-            *chan_stats = NULL;
-            return webconfig_error_decode;
+            goto err_free;
         }
 
         param = cJSON_GetObjectItem(neighbor_stats, "ap_SSID");
@@ -5549,12 +5541,9 @@ webconfig_error_t decode_assocdev_stats_object(wifi_provider_response_t **assoc_
     for (int count = 0; count < size; count++) {
         assoc_data = cJSON_GetArrayItem(assoc_stats_arr, count);
         if (assoc_data == NULL) {
-            free(client_stats_data);
-            free(*assoc_stats);
-            *assoc_stats = NULL;
             wifi_util_error_print(WIFI_WEBCONFIG, "%s:%d: null Json Pointer for : %d \n", __func__,
                 __LINE__, count);
-            return webconfig_error_decode;
+            goto err_free;
         }
 
         if (decode_param_string(assoc_data, "cli_MACAddress", param) != webconfig_error_none) {
@@ -5776,7 +5765,6 @@ webconfig_error_t decode_radiodiag_stats_object(wifi_provider_response_t **diag_
     }
 
     if (decode_param_integer(json, "RadioIndex", param) != webconfig_error_none) {
-        wifi_util_error_print(WIFI_WEBCONFIG, "%s:%d: decode Failed\n", __func__, __LINE__);
         free(*diag_stats);
         *diag_stats = NULL;
         return webconfig_error_decode;
@@ -5794,11 +5782,8 @@ webconfig_error_t decode_radiodiag_stats_object(wifi_provider_response_t **diag_
     for (int count = 0; count < size; count++) {
         diag_data = cJSON_GetArrayItem(diag_stats_arr, count);
         if (diag_data == NULL) {
-            free(diagnostic_data);
-            free(*diag_stats);
-            *diag_stats = NULL;
             wifi_util_error_print(WIFI_WEBCONFIG, "%s:%d: null Json Pointer for : %d \n", __func__, __LINE__, count);
-            return webconfig_error_decode;
+            goto err_free;
         }
 
         if (decode_param_integer(diag_data, "primary_radio_channel", param) != webconfig_error_none) {
@@ -5951,7 +5936,6 @@ webconfig_error_t decode_radio_temperature_stats_object(wifi_provider_response_t
     }
 
     if (decode_param_integer(json, "RadioIndex", param) != webconfig_error_none) {
-        wifi_util_error_print(WIFI_WEBCONFIG, "%s:%d: decode Failed\n", __func__, __LINE__);
         free(*temp_stats);
         *temp_stats = NULL;
         return webconfig_error_decode;
@@ -5977,7 +5961,6 @@ webconfig_error_t decode_radio_temperature_stats_object(wifi_provider_response_t
         }
 
         if (decode_param_integer(temp_data, "Radio_Temperature", param) != webconfig_error_none) {
-            wifi_util_error_print(WIFI_WEBCONFIG, "%s:%d: decode Failed\n", __func__, __LINE__);
             free(temperature_data);
             free(*temp_stats);
             *temp_stats = NULL;
