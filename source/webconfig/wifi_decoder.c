@@ -78,7 +78,7 @@ static inline webconfig_error_t decode_param_allow_empty_string(const cJSON *jso
 static inline webconfig_error_t decode_param_integer_1(const cJSON *json, const char *key, const cJSON **value)
 {
     *value = cJSON_GetObjectItem(json, key);
-    if ((value == NULL) || (cJSON_IsNumber(value) == false)) {
+    if ((*value == NULL) || (cJSON_IsNumber(*value) == false)) {
         wifi_util_error_print(WIFI_WEBCONFIG,"%s:%d: Validation failed for key:%s\n", __func__, __LINE__, key);
         return webconfig_error_decode;
     }
