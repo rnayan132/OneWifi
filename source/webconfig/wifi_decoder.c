@@ -3812,9 +3812,19 @@ webconfig_error_t decode_mac_object(rdk_wifi_vap_info_t *rdk_vap_info, cJSON *ob
             return webconfig_error_decode;
         }
         strncpy(acl_entry->device_name, tmp_device_name, sizeof(acl_entry->device_name)-1);
-        decode_param_integer(mac_object, "reason", param);
+
+        if (decode_param_integer(mac_object, "reason", param) != webconfig_error_none) {
+            wifi_util_error_print(WIFI_WEBCONFIG, "%s:%d: decode Failed\n", __func__, __LINE__);
+            free(acl_entry);
+            return webconfig_error_decode;
+        }
         acl_entry->reason = param->valuedouble;
-        decode_param_integer(mac_object, "expiry_time", param);
+
+        if (decode_param_integer(mac_object, "expiry_time", param) != webconfig_error_none) {
+            wifi_util_error_print(WIFI_WEBCONFIG, "%s:%d: decode Failed\n", __func__, __LINE__);
+            free(acl_entry);
+            return webconfig_error_decode;
+        }
         acl_entry->expiry_time = param->valuedouble;
 
         str_tolower(tmp_mac);
@@ -5070,10 +5080,18 @@ webconfig_error_t decode_radio_channel_radio_stats_object(wifi_provider_response
         return webconfig_error_decode;
     }
 
-    decode_param_integer(json, "RadioIndex", param);
+    if (decode_param_integer(json, "RadioIndex", param) != webconfig_error_none) {
+        free(*chan_stats);
+        *chan_stats = NULL;
+        return webconfig_error_decode;
+    }
     (*chan_stats)->args.radio_index = param->valuedouble;
 
-    decode_param_string(json, "ScanMode", param);
+    if (decode_param_string(json, "ScanMode", param) != webconfig_error_none) {
+        free(*chan_stats);
+        *chan_stats = NULL;
+        return webconfig_error_decode;
+    }
     if (scan_mode_type_conversion(&scan_mode, param->valuestring, MAX_SCAN_MODE_LEN, STRING_TO_ENUM) != RETURN_OK)  {
         wifi_util_error_print(WIFI_WEBCONFIG, "%s:%d: scan_mode_type_conversion failed for %s\n", __func__, __LINE__, param->valuestring);
         free(*chan_stats);
@@ -5100,46 +5118,76 @@ webconfig_error_t decode_radio_channel_radio_stats_object(wifi_provider_response
             return webconfig_error_decode;
         }
 
-        decode_param_integer(radio_stats, "ChannelNumber", param);
+        if (decode_param_integer(radio_stats, "ChannelNumber", param) != webconfig_error_none) {
+            goto err_free;
+        }
         chan_data[count].ch_number = param->valuedouble;
 
-        decode_param_integer(radio_stats, "ChannelNoise", param);
+        if (decode_param_integer(radio_stats, "ChannelNoise", param) != webconfig_error_none) {
+            goto err_free;
+        }
         chan_data[count].ch_noise = param->valuedouble;
 
-        decode_param_bool(radio_stats, "RadarNoise", param);
+        if (decode_param_bool(radio_stats, "RadarNoise", param) != webconfig_error_none) {
+            goto err_free;
+        }
         chan_data[count].ch_radar_noise = (param->type & cJSON_True) ? true:false;
 
-        decode_param_integer(radio_stats, "RSSI", param);
+        if (decode_param_integer(radio_stats, "RSSI", param) != webconfig_error_none) {
+            goto err_free;
+        }
         chan_data[count].ch_max_80211_rssi = param->valuedouble;
 
-        decode_param_integer(radio_stats, "Non80211Noise", param);
+        if (decode_param_integer(radio_stats, "Non80211Noise", param) != webconfig_error_none) {
+            goto err_free;
+        }
         chan_data[count].ch_non_80211_noise = param->valuedouble;
 
-        decode_param_integer(radio_stats, "ChannelUtilization", param);
+        if (decode_param_integer(radio_stats, "ChannelUtilization", param) != webconfig_error_none) {
+            goto err_free;
+        }
         chan_data[count].ch_utilization = param->valuedouble;
 
-        decode_param_integer(radio_stats,"TotalUtilization", param);
+        if (decode_param_integer(radio_stats,"TotalUtilization", param) != webconfig_error_none) {
+            goto err_free;
+        }
         chan_data[count].ch_utilization_total = param->valuedouble;
 
-        decode_param_integer(radio_stats, "UtilizationBusy", param);
+        if (decode_param_integer(radio_stats, "UtilizationBusy", param) != webconfig_error_none) {
+            goto err_free;
+        }
         chan_data[count].ch_utilization_busy = param->valuedouble;
 
-        decode_param_integer(radio_stats, "UtilizationBusyTx", param);
+        if (decode_param_integer(radio_stats, "UtilizationBusyTx", param) != webconfig_error_none) {
+            goto err_free;
+        }
         chan_data[count].ch_utilization_busy_tx = param->valuedouble;
 
-        decode_param_integer(radio_stats, "UtilizationBusyRx", param);
+        if (decode_param_integer(radio_stats, "UtilizationBusyRx", param) != webconfig_error_none) {
+            goto err_free;
+        }
         chan_data[count].ch_utilization_busy_rx = param->valuedouble;
 
-        decode_param_integer(radio_stats, "UtilizationBusySelf",  param);
+        if (decode_param_integer(radio_stats, "UtilizationBusySelf",  param) != webconfig_error_none) {
+            goto err_free;
+        }
         chan_data[count].ch_utilization_busy_self = param->valuedouble;
 
-        decode_param_integer(radio_stats, "UtilizationBusyExt", param);
+        if (decode_param_integer(radio_stats, "UtilizationBusyExt", param) != webconfig_error_none) {
+            goto err_free;
+        }
         chan_data[count].ch_utilization_busy_ext = param->valuedouble;
     }
     (*chan_stats)->stat_pointer = chan_data;
     (*chan_stats)->stat_array_size = size;
 
     return webconfig_error_none;
+
+err_free:
+    free(chan_data);
+    free(*chan_stats);
+    *chan_stats = NULL;
+    return webconfig_error_decode;
 }
 
 webconfig_error_t decode_radio_neighbor_stats_object(wifi_provider_response_t **chan_stats, cJSON *json)
@@ -5171,10 +5219,18 @@ webconfig_error_t decode_radio_neighbor_stats_object(wifi_provider_response_t **
         return webconfig_error_decode;
     }
 
-    decode_param_integer(json, "RadioIndex", param);
+    if (decode_param_integer(json, "RadioIndex", param) != webconfig_error_none) {
+        free(*chan_stats);
+        *chan_stats = NULL;
+        return webconfig_error_decode;
+    }
     (*chan_stats)->args.radio_index = param->valuedouble;
 
-    decode_param_string(json, "ScanMode", param);
+    if (decode_param_string(json, "ScanMode", param) != webconfig_error_none) {
+        free(*chan_stats);
+        *chan_stats = NULL;
+        return webconfig_error_decode;
+    }
     if (scan_mode_type_conversion(&scan_mode, param->valuestring, MAX_SCAN_MODE_LEN, STRING_TO_ENUM) != RETURN_OK)  {
         free(*chan_stats);
         *chan_stats = NULL;
@@ -5213,52 +5269,84 @@ webconfig_error_t decode_radio_neighbor_stats_object(wifi_provider_response_t **
             strncpy(neighbor_stats_data[count].ap_SSID, param->valuestring, sizeof(neighbor_stats_data[count].ap_SSID) - 1);
         }
 
-        decode_param_string(neighbor_stats, "ap_BSSID", param);
+        if (decode_param_string(neighbor_stats, "ap_BSSID", param) != webconfig_error_none) {
+            goto err_free;
+        }
         strncpy(neighbor_stats_data[count].ap_BSSID, param->valuestring, sizeof(neighbor_stats_data[count].ap_BSSID) - 1);
 
-        decode_param_string(neighbor_stats, "ap_Mode", param);
+        if (decode_param_string(neighbor_stats, "ap_Mode", param) != webconfig_error_none) {
+            goto err_free;
+        }
         strncpy(neighbor_stats_data[count].ap_Mode, param->valuestring, sizeof(neighbor_stats_data[count].ap_Mode) - 1);
 
-        decode_param_integer(neighbor_stats, "ap_Channel", param);
+        if (decode_param_integer(neighbor_stats, "ap_Channel", param) != webconfig_error_none) {
+            goto err_free;
+        }
         neighbor_stats_data[count].ap_Channel = param->valuedouble;
 
-        decode_param_integer(neighbor_stats, "ap_SignalStrength", param);
+        if (decode_param_integer(neighbor_stats, "ap_SignalStrength", param) != webconfig_error_none) {
+            goto err_free;
+        }
         neighbor_stats_data[count].ap_SignalStrength = param->valuedouble;
 
-        decode_param_string(neighbor_stats, "ap_SecurityModeEnabled", param);
+        if (decode_param_string(neighbor_stats, "ap_SecurityModeEnabled", param) != webconfig_error_none) {
+            goto err_free;
+        }
         strncpy(neighbor_stats_data[count].ap_SecurityModeEnabled, param->valuestring, sizeof(neighbor_stats_data[count].ap_SecurityModeEnabled) - 1);
 
-        decode_param_string(neighbor_stats, "ap_EncryptionMode", param);
+        if (decode_param_string(neighbor_stats, "ap_EncryptionMode", param) != webconfig_error_none) {
+            goto err_free;
+        }
         strncpy(neighbor_stats_data[count].ap_EncryptionMode, param->valuestring, sizeof(neighbor_stats_data[count].ap_EncryptionMode) - 1);
 
-        decode_param_string(neighbor_stats, "ap_OperatingFrequencyBand", param);
+        if (decode_param_string(neighbor_stats, "ap_OperatingFrequencyBand", param) != webconfig_error_none) {
+            goto err_free;
+        }
         strncpy(neighbor_stats_data[count].ap_OperatingFrequencyBand, param->valuestring, sizeof(neighbor_stats_data[count].ap_OperatingFrequencyBand) - 1);
 
-        decode_param_string(neighbor_stats, "ap_SupportedStandards", param);
+        if (decode_param_string(neighbor_stats, "ap_SupportedStandards", param) != webconfig_error_none) {
+            goto err_free;
+        }
         strncpy(neighbor_stats_data[count].ap_SupportedStandards, param->valuestring, sizeof(neighbor_stats_data[count].ap_SupportedStandards) - 1);
 
-        decode_param_string(neighbor_stats, "ap_OperatingStandards", param);
+        if (decode_param_string(neighbor_stats, "ap_OperatingStandards", param) != webconfig_error_none) {
+            goto err_free;
+        }
         strncpy(neighbor_stats_data[count].ap_OperatingStandards, param->valuestring, sizeof(neighbor_stats_data[count].ap_OperatingStandards) - 1);
 
-        decode_param_string(neighbor_stats, "ap_OperatingChannelBandwidth", param);
+        if (decode_param_string(neighbor_stats, "ap_OperatingChannelBandwidth", param) != webconfig_error_none) {
+            goto err_free;
+        }
         strncpy(neighbor_stats_data[count].ap_OperatingChannelBandwidth, param->valuestring, sizeof(neighbor_stats_data[count].ap_OperatingChannelBandwidth) - 1);
 
-        decode_param_integer(neighbor_stats, "ap_BeaconPeriod", param);
+        if (decode_param_integer(neighbor_stats, "ap_BeaconPeriod", param) != webconfig_error_none) {
+            goto err_free;
+        }
         neighbor_stats_data[count].ap_BeaconPeriod = param->valuedouble;
 
-        decode_param_integer(neighbor_stats, "ap_Noise", param);
+        if (decode_param_integer(neighbor_stats, "ap_Noise", param) != webconfig_error_none) {
+            goto err_free;
+        }
         neighbor_stats_data[count].ap_Noise = param->valuedouble;
 
-        decode_param_string(neighbor_stats, "ap_BasicDataTransferRates", param);
+        if (decode_param_string(neighbor_stats, "ap_BasicDataTransferRates", param) != webconfig_error_none) {
+            goto err_free;
+        }
         strncpy(neighbor_stats_data[count].ap_BasicDataTransferRates, param->valuestring, sizeof(neighbor_stats_data[count].ap_BasicDataTransferRates) - 1);
 
-        decode_param_string(neighbor_stats, "ap_SupportedDataTransferRates", param);
+        if (decode_param_string(neighbor_stats, "ap_SupportedDataTransferRates", param) != webconfig_error_none) {
+            goto err_free;
+        }
         strncpy(neighbor_stats_data[count].ap_SupportedDataTransferRates, param->valuestring, sizeof(neighbor_stats_data[count].ap_SupportedDataTransferRates) - 1);
 
-        decode_param_integer(neighbor_stats, "ap_DTIMPeriod", param);
+        if (decode_param_integer(neighbor_stats, "ap_DTIMPeriod", param) != webconfig_error_none) {
+            goto err_free;
+        }
         neighbor_stats_data[count].ap_DTIMPeriod = param->valuedouble;
 
-        decode_param_integer(neighbor_stats, "ap_ChannelUtilization", param);
+        if (decode_param_integer(neighbor_stats, "ap_ChannelUtilization", param) != webconfig_error_none) {
+            goto err_free;
+        }
         neighbor_stats_data[count].ap_ChannelUtilization = param->valuedouble;
 
     }
@@ -5266,6 +5354,12 @@ webconfig_error_t decode_radio_neighbor_stats_object(wifi_provider_response_t **
     (*chan_stats)->stat_array_size = size;
 
     return webconfig_error_none;
+
+err_free:
+    free(neighbor_stats_data);
+    free(*chan_stats);
+    *chan_stats = NULL;
+    return webconfig_error_decode;
 }
 
 #ifdef EM_APP
@@ -5426,7 +5520,11 @@ webconfig_error_t decode_assocdev_stats_object(wifi_provider_response_t **assoc_
         return webconfig_error_decode;
     }
 
-    decode_param_integer(json, "VapIndex", param);
+    if (decode_param_integer(json, "VapIndex", param) != webconfig_error_none) {
+        free(*assoc_stats);
+        *assoc_stats = NULL;
+        return webconfig_error_decode;
+    }
     (*assoc_stats)->args.vap_index = param->valuedouble;
 
     if (size == 0) {
@@ -5459,37 +5557,57 @@ webconfig_error_t decode_assocdev_stats_object(wifi_provider_response_t **assoc_
             return webconfig_error_decode;
         }
 
-        decode_param_string(assoc_data, "cli_MACAddress", param);
+        if (decode_param_string(assoc_data, "cli_MACAddress", param) != webconfig_error_none) {
+            goto err_free;
+        }
         string_mac_to_uint8_mac(client_stats_data[count].cli_MACAddress, param->valuestring);
 
-        decode_param_bool(assoc_data, "cli_AuthenticationState", param);
+        if (decode_param_bool(assoc_data, "cli_AuthenticationState", param) != webconfig_error_none) {
+            goto err_free;
+        }
         client_stats_data[count].cli_AuthenticationState = (param->type & cJSON_True) ? true :
                                                                                         false;
 
-        decode_param_integer(assoc_data, "cli_LastDataDownlinkRate", param);
+        if (decode_param_integer(assoc_data, "cli_LastDataDownlinkRate", param) != webconfig_error_none) {
+            goto err_free;
+        }
         client_stats_data[count].cli_LastDataDownlinkRate = param->valuedouble;
 
-        decode_param_integer(assoc_data, "cli_LastDataUplinkRate", param);
+        if (decode_param_integer(assoc_data, "cli_LastDataUplinkRate", param) != webconfig_error_none) {
+            goto err_free;
+        }
         client_stats_data[count].cli_LastDataUplinkRate = param->valuedouble;
 
-        decode_param_integer(assoc_data, "cli_SignalStrength", param);
+        if (decode_param_integer(assoc_data, "cli_SignalStrength", param) != webconfig_error_none) {
+            goto err_free;
+        }
         client_stats_data[count].cli_SignalStrength = param->valuedouble;
 
-        decode_param_integer(assoc_data, "cli_Retransmissions", param);
+        if (decode_param_integer(assoc_data, "cli_Retransmissions", param) != webconfig_error_none) {
+            goto err_free;
+        }
         client_stats_data[count].cli_Retransmissions = param->valuedouble;
 
-        decode_param_bool(assoc_data, "cli_Active", param);
+        if (decode_param_bool(assoc_data, "cli_Active", param) != webconfig_error_none) {
+            goto err_free;
+        }
         client_stats_data[count].cli_Active = (param->type & cJSON_True) ? true : false;
 
-        decode_param_allow_empty_string(assoc_data, "cli_OperatingStandard", param);
+        if (decode_param_allow_empty_string(assoc_data, "cli_OperatingStandard", param) != webconfig_error_none) {
+            goto err_free;
+        }
         strncpy(client_stats_data[count].cli_OperatingStandard, param->valuestring,
             sizeof(client_stats_data[count].cli_OperatingStandard) - 1);
 
-        decode_param_allow_empty_string(assoc_data, "cli_OperatingChannelBandwidth", param);
+        if (decode_param_allow_empty_string(assoc_data, "cli_OperatingChannelBandwidth", param) != webconfig_error_none) {
+            goto err_free;
+        }
         strncpy(client_stats_data[count].cli_OperatingChannelBandwidth, param->valuestring,
             sizeof(client_stats_data[count].cli_OperatingChannelBandwidth) - 1);
 
-        decode_param_integer(assoc_data, "cli_SNR", param);
+        if (decode_param_integer(assoc_data, "cli_SNR", param) != webconfig_error_none) {
+            goto err_free;
+        }
         client_stats_data[count].cli_SNR = param->valuedouble;
 
         param = cJSON_GetObjectItem(assoc_data, "cli_InterferenceSources");
@@ -5498,82 +5616,136 @@ webconfig_error_t decode_assocdev_stats_object(wifi_provider_response_t **assoc_
                 sizeof(client_stats_data[count].cli_InterferenceSources) - 1);
         }
 
-        decode_param_integer(assoc_data, "cli_DataFramesSentAck", param);
+        if (decode_param_integer(assoc_data, "cli_DataFramesSentAck", param) != webconfig_error_none) {
+            goto err_free;
+        }
         client_stats_data[count].cli_DataFramesSentAck = param->valuedouble;
 
-        decode_param_integer(assoc_data, "cli_DataFramesSentNoAck", param);
+        if (decode_param_integer(assoc_data, "cli_DataFramesSentNoAck", param) != webconfig_error_none) {
+            goto err_free;
+        }
         client_stats_data[count].cli_DataFramesSentNoAck = param->valuedouble;
 
-        decode_param_integer(assoc_data, "cli_BytesSent", param);
+        if (decode_param_integer(assoc_data, "cli_BytesSent", param) != webconfig_error_none) {
+            goto err_free;
+        }
         client_stats_data[count].cli_BytesSent = param->valuedouble;
 
-        decode_param_integer(assoc_data, "cli_BytesReceived", param);
+        if (decode_param_integer(assoc_data, "cli_BytesReceived", param) != webconfig_error_none) {
+            goto err_free;
+        }
         client_stats_data[count].cli_BytesReceived = param->valuedouble;
 
-        decode_param_integer(assoc_data, "cli_Retransmissions", param);
+        if (decode_param_integer(assoc_data, "cli_Retransmissions", param) != webconfig_error_none) {
+            goto err_free;
+        }
         client_stats_data[count].cli_Retransmissions = param->valuedouble;
 
-        decode_param_integer(assoc_data, "cli_RSSI", param);
+        if (decode_param_integer(assoc_data, "cli_RSSI", param) != webconfig_error_none) {
+            goto err_free;
+        }
         client_stats_data[count].cli_RSSI = param->valuedouble;
 
-        decode_param_integer(assoc_data, "cli_MinRSSI", param);
+        if (decode_param_integer(assoc_data, "cli_MinRSSI", param) != webconfig_error_none) {
+            goto err_free;
+        }
         client_stats_data[count].cli_MinRSSI = param->valuedouble;
 
-        decode_param_integer(assoc_data, "cli_MaxRSSI", param);
+        if (decode_param_integer(assoc_data, "cli_MaxRSSI", param) != webconfig_error_none) {
+            goto err_free;
+        }
         client_stats_data[count].cli_MaxRSSI = param->valuedouble;
 
-        decode_param_integer(assoc_data, "cli_Disassociations", param);
+        if (decode_param_integer(assoc_data, "cli_Disassociations", param) != webconfig_error_none) {
+            goto err_free;
+        }
         client_stats_data[count].cli_Disassociations = param->valuedouble;
 
-        decode_param_integer(assoc_data, "cli_AuthenticationFailures", param);
+        if (decode_param_integer(assoc_data, "cli_AuthenticationFailures", param) != webconfig_error_none) {
+            goto err_free;
+        }
         client_stats_data[count].cli_AuthenticationFailures = param->valuedouble;
 
-        decode_param_integer(assoc_data, "cli_Associations", param);
+        if (decode_param_integer(assoc_data, "cli_Associations", param) != webconfig_error_none) {
+            goto err_free;
+        }
         client_stats_data[count].cli_Associations = param->valuedouble;
 
-        decode_param_integer(assoc_data, "cli_PacketsSent", param);
+        if (decode_param_integer(assoc_data, "cli_PacketsSent", param) != webconfig_error_none) {
+            goto err_free;
+        }
         client_stats_data[count].cli_PacketsSent = param->valuedouble;
 
-        decode_param_integer(assoc_data, "cli_PacketsReceived", param);
+        if (decode_param_integer(assoc_data, "cli_PacketsReceived", param) != webconfig_error_none) {
+            goto err_free;
+        }
         client_stats_data[count].cli_PacketsReceived = param->valuedouble;
 
-        decode_param_integer(assoc_data, "cli_ErrorsSent", param);
+        if (decode_param_integer(assoc_data, "cli_ErrorsSent", param) != webconfig_error_none) {
+            goto err_free;
+        }
         client_stats_data[count].cli_ErrorsSent = param->valuedouble;
 
-        decode_param_integer(assoc_data, "cli_RetransCount", param);
+        if (decode_param_integer(assoc_data, "cli_RetransCount", param) != webconfig_error_none) {
+            goto err_free;
+        }
         client_stats_data[count].cli_RetransCount = param->valuedouble;
 
-        decode_param_integer(assoc_data, "cli_FailedRetransCount", param);
+        if (decode_param_integer(assoc_data, "cli_FailedRetransCount", param) != webconfig_error_none) {
+            goto err_free;
+        }
         client_stats_data[count].cli_FailedRetransCount = param->valuedouble;
 
-        decode_param_integer(assoc_data, "cli_RetryCount", param);
+        if (decode_param_integer(assoc_data, "cli_RetryCount", param) != webconfig_error_none) {
+            goto err_free;
+        }
         client_stats_data[count].cli_RetryCount = param->valuedouble;
 
-        decode_param_integer(assoc_data, "cli_MultipleRetryCount", param);
+        if (decode_param_integer(assoc_data, "cli_MultipleRetryCount", param) != webconfig_error_none) {
+            goto err_free;
+        }
         client_stats_data[count].cli_MultipleRetryCount = param->valuedouble;
 
-        decode_param_integer(assoc_data, "cli_MaxDownlinkRate", param);
+        if (decode_param_integer(assoc_data, "cli_MaxDownlinkRate", param) != webconfig_error_none) {
+            goto err_free;
+        }
         client_stats_data[count].cli_MaxDownlinkRate = param->valuedouble;
 
-        decode_param_integer(assoc_data, "cli_MaxUplinkRate", param);
+        if (decode_param_integer(assoc_data, "cli_MaxUplinkRate", param) != webconfig_error_none) {
+            goto err_free;
+        }
         client_stats_data[count].cli_MaxUplinkRate = param->valuedouble;
 
-        decode_param_integer(assoc_data, "cli_activeNumSpatialStreams", param);
+        if (decode_param_integer(assoc_data, "cli_activeNumSpatialStreams", param) != webconfig_error_none) {
+            goto err_free;
+        }
         client_stats_data[count].cli_activeNumSpatialStreams = param->valuedouble;
 
-        decode_param_integer(assoc_data, "cli_TxFrames", param);
+        if (decode_param_integer(assoc_data, "cli_TxFrames", param) != webconfig_error_none) {
+            goto err_free;
+        }
         client_stats_data[count].cli_TxFrames = param->valuedouble;
 
-        decode_param_integer(assoc_data, "cli_RxRetries", param);
+        if (decode_param_integer(assoc_data, "cli_RxRetries", param) != webconfig_error_none) {
+            goto err_free;
+        }
         client_stats_data[count].cli_RxRetries = param->valuedouble;
 
-        decode_param_integer(assoc_data, "cli_RxErrors", param);
+        if (decode_param_integer(assoc_data, "cli_RxErrors", param) != webconfig_error_none) {
+            goto err_free;
+        }
         client_stats_data[count].cli_RxErrors = param->valuedouble;
     }
     (*assoc_stats)->stat_pointer = client_stats_data;
     (*assoc_stats)->stat_array_size = size;
 
     return webconfig_error_none;
+
+err_free:
+    free(client_stats_data);
+    free(*assoc_stats);
+    *assoc_stats = NULL;
+    return webconfig_error_decode;
 }
 
 webconfig_error_t decode_radiodiag_stats_object(wifi_provider_response_t **diag_stats, cJSON *json)
@@ -5603,7 +5775,12 @@ webconfig_error_t decode_radiodiag_stats_object(wifi_provider_response_t **diag_
         return webconfig_error_decode;
     }
 
-    decode_param_integer(json, "RadioIndex", param);
+    if (decode_param_integer(json, "RadioIndex", param) != webconfig_error_none) {
+        wifi_util_error_print(WIFI_WEBCONFIG, "%s:%d: decode Failed\n", __func__, __LINE__);
+        free(*diag_stats);
+        *diag_stats = NULL;
+        return webconfig_error_decode;
+    }
     (*diag_stats)->args.radio_index = param->valuedouble;
 
     diagnostic_data = (radio_data_t*) malloc(sizeof(radio_data_t) * size);
@@ -5624,76 +5801,126 @@ webconfig_error_t decode_radiodiag_stats_object(wifi_provider_response_t **diag_
             return webconfig_error_decode;
         }
 
-        decode_param_integer(diag_data, "primary_radio_channel", param);
+        if (decode_param_integer(diag_data, "primary_radio_channel", param) != webconfig_error_none) {
+            goto err_free;
+        }
         diagnostic_data[count].primary_radio_channel = param->valuedouble;
 
-        decode_param_integer(diag_data, "RadioActivityFactor", param);
+        if (decode_param_integer(diag_data, "RadioActivityFactor", param) != webconfig_error_none) {
+            goto err_free;
+        }
         diagnostic_data[count].RadioActivityFactor = param->valuedouble;
 
-        decode_param_integer(diag_data, "CarrierSenseThreshold_Exceeded", param);
+        if (decode_param_integer(diag_data, "CarrierSenseThreshold_Exceeded", param) != webconfig_error_none) {
+            goto err_free;
+        }
         diagnostic_data[count].CarrierSenseThreshold_Exceeded = param->valuedouble;
 
-        decode_param_integer(diag_data, "NoiseFloor", param);
+        if (decode_param_integer(diag_data, "NoiseFloor", param) != webconfig_error_none) {
+            goto err_free;
+        }
         diagnostic_data[count].NoiseFloor = param->valuedouble;
 
-        decode_param_integer(diag_data, "channelUtil", param);
+        if (decode_param_integer(diag_data, "channelUtil", param) != webconfig_error_none) {
+            goto err_free;
+        }
         diagnostic_data[count].channelUtil = param->valuedouble;
 
-        decode_param_integer(diag_data, "radio_BytesSent", param);
+        if (decode_param_integer(diag_data, "radio_BytesSent", param) != webconfig_error_none) {
+            goto err_free;
+        }
         diagnostic_data[count].radio_BytesSent = param->valuedouble;
 
-        decode_param_integer(diag_data, "radio_BytesReceived", param);
+        if (decode_param_integer(diag_data, "radio_BytesReceived", param) != webconfig_error_none) {
+            goto err_free;
+        }
         diagnostic_data[count].radio_BytesReceived = param->valuedouble;
 
-        decode_param_integer(diag_data, "radio_PacketsSent", param);
+        if (decode_param_integer(diag_data, "radio_PacketsSent", param) != webconfig_error_none) {
+            goto err_free;
+        }
         diagnostic_data[count].radio_PacketsSent = param->valuedouble;
 
-        decode_param_integer(diag_data, "radio_PacketsReceived", param);
+        if (decode_param_integer(diag_data, "radio_PacketsReceived", param) != webconfig_error_none) {
+            goto err_free;
+        }
         diagnostic_data[count].radio_PacketsReceived = param->valuedouble;
 
-        decode_param_integer(diag_data, "radio_ErrorsSent", param);
+        if (decode_param_integer(diag_data, "radio_ErrorsSent", param) != webconfig_error_none) {
+            goto err_free;
+        }
         diagnostic_data[count].radio_ErrorsSent = param->valuedouble;
 
-        decode_param_integer(diag_data, "radio_ErrorsReceived", param);
+        if (decode_param_integer(diag_data, "radio_ErrorsReceived", param) != webconfig_error_none) {
+            goto err_free;
+        }
         diagnostic_data[count].radio_ErrorsReceived = param->valuedouble;
 
-        decode_param_integer(diag_data, "radio_DiscardPacketsSent", param);
+        if (decode_param_integer(diag_data, "radio_DiscardPacketsSent", param) != webconfig_error_none) {
+            goto err_free;
+        }
         diagnostic_data[count].radio_DiscardPacketsSent = param->valuedouble;
 
-        decode_param_integer(diag_data, "radio_DiscardPacketsReceived", param);
+        if (decode_param_integer(diag_data, "radio_DiscardPacketsReceived", param) != webconfig_error_none) {
+            goto err_free;
+        }
         diagnostic_data[count].radio_DiscardPacketsReceived = param->valuedouble;
 
-        decode_param_integer(diag_data, "radio_InvalidMACCount", param);
+        if (decode_param_integer(diag_data, "radio_InvalidMACCount", param) != webconfig_error_none) {
+            goto err_free;
+        }
         diagnostic_data[count].radio_InvalidMACCount = param->valuedouble;
 
-        decode_param_integer(diag_data, "radio_PacketsOtherReceived", param);
+        if (decode_param_integer(diag_data, "radio_PacketsOtherReceived", param) != webconfig_error_none) {
+            goto err_free;
+        }
         diagnostic_data[count].radio_PacketsOtherReceived = param->valuedouble;
 
-        decode_param_integer(diag_data, "radio_RetransmissionMetirc", param);
+        if (decode_param_integer(diag_data, "radio_RetransmissionMetirc", param) != webconfig_error_none) {
+            goto err_free;
+        }
         diagnostic_data[count].radio_RetransmissionMetirc = param->valuedouble;
 
-        decode_param_integer(diag_data, "radio_PLCPErrorCount", param);
+        if (decode_param_integer(diag_data, "radio_PLCPErrorCount", param) != webconfig_error_none) {
+            goto err_free;
+        }
         diagnostic_data[count].radio_PLCPErrorCount = param->valuedouble;
 
-        decode_param_integer(diag_data, "radio_FCSErrorCount", param);
+        if (decode_param_integer(diag_data, "radio_FCSErrorCount", param) != webconfig_error_none) {
+            goto err_free;
+        }
         diagnostic_data[count].radio_FCSErrorCount = param->valuedouble;
 
-        decode_param_integer(diag_data, "radio_MaximumNoiseFloorOnChannel", param);
+        if (decode_param_integer(diag_data, "radio_MaximumNoiseFloorOnChannel", param) != webconfig_error_none) {
+            goto err_free;
+        }
         diagnostic_data[count].radio_MaximumNoiseFloorOnChannel = param->valuedouble;
 
-        decode_param_integer(diag_data, "radio_MinimumNoiseFloorOnChannel", param);
+        if (decode_param_integer(diag_data, "radio_MinimumNoiseFloorOnChannel", param) != webconfig_error_none) {
+            goto err_free;
+        }
         diagnostic_data[count].radio_MinimumNoiseFloorOnChannel = param->valuedouble;
 
-        decode_param_integer(diag_data, "radio_MedianNoiseFloorOnChannel", param);
+        if (decode_param_integer(diag_data, "radio_MedianNoiseFloorOnChannel", param) != webconfig_error_none) {
+            goto err_free;
+        }
         diagnostic_data[count].radio_MedianNoiseFloorOnChannel = param->valuedouble;
 
-        decode_param_integer(diag_data, "radio_StatisticsStartTime", param);
+        if (decode_param_integer(diag_data, "radio_StatisticsStartTime", param) != webconfig_error_none) {
+            goto err_free;
+        }
         diagnostic_data[count].radio_StatisticsStartTime = param->valuedouble;
     }
     (*diag_stats)->stat_pointer = diagnostic_data;
     (*diag_stats)->stat_array_size = size;
 
     return webconfig_error_none;
+
+err_free:
+    free(diagnostic_data);
+    free(*diag_stats);
+    *diag_stats = NULL;
+    return webconfig_error_decode;
 }
 
 webconfig_error_t decode_radio_temperature_stats_object(wifi_provider_response_t **temp_stats, cJSON *json)
@@ -5723,7 +5950,12 @@ webconfig_error_t decode_radio_temperature_stats_object(wifi_provider_response_t
         return webconfig_error_decode;
     }
 
-    decode_param_integer(json, "RadioIndex", param);
+    if (decode_param_integer(json, "RadioIndex", param) != webconfig_error_none) {
+        wifi_util_error_print(WIFI_WEBCONFIG, "%s:%d: decode Failed\n", __func__, __LINE__);
+        free(*temp_stats);
+        *temp_stats = NULL;
+        return webconfig_error_decode;
+    }
     (*temp_stats)->args.radio_index = param->valuedouble;
 
     temperature_data = (radio_data_t*) malloc(sizeof(radio_data_t) * size);
@@ -5744,7 +5976,13 @@ webconfig_error_t decode_radio_temperature_stats_object(wifi_provider_response_t
             return webconfig_error_decode;
         }
 
-        decode_param_integer(temp_data, "Radio_Temperature", param);
+        if (decode_param_integer(temp_data, "Radio_Temperature", param) != webconfig_error_none) {
+            wifi_util_error_print(WIFI_WEBCONFIG, "%s:%d: decode Failed\n", __func__, __LINE__);
+            free(temperature_data);
+            free(*temp_stats);
+            *temp_stats = NULL;
+            return webconfig_error_decode;
+        }
         temperature_data[count].radio_Temperature = param->valuedouble;
     }
     (*temp_stats)->stat_pointer = temperature_data;
