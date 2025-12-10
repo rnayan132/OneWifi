@@ -5100,9 +5100,9 @@ webconfig_error_t decode_radio_channel_radio_stats_object(wifi_provider_response
 
     chan_data = (radio_chan_data_t*) malloc(sizeof(radio_chan_data_t) * size);
     if (chan_data == NULL) {
+        wifi_util_error_print(WIFI_WEBCONFIG, "%s:%d Failed to allocate memory\n", __func__, __LINE__);
         free(*chan_stats);
         *chan_stats = NULL;
-        wifi_util_error_print(WIFI_WEBCONFIG, "%s:%d Failed to allocate memory\n", __func__, __LINE__);
         return webconfig_error_decode;
     }
 
@@ -5235,16 +5235,16 @@ webconfig_error_t decode_radio_neighbor_stats_object(wifi_provider_response_t **
     (*chan_stats)->args.scan_mode = scan_mode;
 
     if (size == 0) {
+        wifi_util_info_print(WIFI_WEBCONFIG, "%s:%d: Neighbor stats array size is %d\n", __func__, __LINE__, (*chan_stats)->stat_array_size);
         (*chan_stats)->stat_pointer = NULL;
         (*chan_stats)->stat_array_size = 0;
-        wifi_util_info_print(WIFI_WEBCONFIG, "%s:%d: Neighbor stats array size is %d\n", __func__, __LINE__, (*chan_stats)->stat_array_size);
         return webconfig_error_none;
     } else {
         neighbor_stats_data = (wifi_neighbor_ap2_t*) malloc(sizeof(wifi_neighbor_ap2_t) * size);
         if (neighbor_stats_data == NULL) {
+            wifi_util_error_print(WIFI_WEBCONFIG, "%s:%d Failed to allocate memory\n", __func__, __LINE__);
             free(*chan_stats);
             *chan_stats = NULL;
-            wifi_util_error_print(WIFI_WEBCONFIG, "%s:%d Failed to allocate memory\n", __func__, __LINE__);
             return webconfig_error_decode;
         }
     }
@@ -5520,20 +5520,20 @@ webconfig_error_t decode_assocdev_stats_object(wifi_provider_response_t **assoc_
     (*assoc_stats)->args.vap_index = param->valuedouble;
 
     if (size == 0) {
+        wifi_util_info_print(WIFI_WEBCONFIG, "%s:%d: Associated Device stats array size is %d\n",
+            __func__, __LINE__, (*assoc_stats)->stat_array_size);
         (*assoc_stats)->stat_pointer = NULL;
         (*assoc_stats)->stat_array_size = 0;
         free(*assoc_stats);
         *assoc_stats = NULL;
-        wifi_util_info_print(WIFI_WEBCONFIG, "%s:%d: Associated Device stats array size is %d\n",
-            __func__, __LINE__, (*assoc_stats)->stat_array_size);
         return webconfig_error_none;
     } else {
         client_stats_data = (wifi_associated_dev3_t *)malloc(sizeof(wifi_associated_dev3_t) * size);
         if (client_stats_data == NULL) {
-            free(*assoc_stats);
-            *assoc_stats = NULL;
             wifi_util_error_print(WIFI_WEBCONFIG, "%s:%d Failed to allocate memory\n", __func__,
                 __LINE__);
+            free(*assoc_stats);
+            *assoc_stats = NULL;
             return webconfig_error_decode;
         }
     }
@@ -5773,9 +5773,9 @@ webconfig_error_t decode_radiodiag_stats_object(wifi_provider_response_t **diag_
 
     diagnostic_data = (radio_data_t*) malloc(sizeof(radio_data_t) * size);
     if (diagnostic_data == NULL) {
+        wifi_util_error_print(WIFI_WEBCONFIG, "%s:%d Failed to allocate memory\n", __func__, __LINE__);
         free(*diag_stats);
         *diag_stats = NULL;
-        wifi_util_error_print(WIFI_WEBCONFIG, "%s:%d Failed to allocate memory\n", __func__, __LINE__);
         return webconfig_error_decode;
     }
 
@@ -5944,9 +5944,9 @@ webconfig_error_t decode_radio_temperature_stats_object(wifi_provider_response_t
 
     temperature_data = (radio_data_t*) malloc(sizeof(radio_data_t) * size);
     if (temperature_data == NULL) {
+        wifi_util_error_print(WIFI_WEBCONFIG, "%s:%d Failed to allocate memory\n", __func__, __LINE__);
         free(*temp_stats);
         *temp_stats = NULL;
-        wifi_util_error_print(WIFI_WEBCONFIG, "%s:%d Failed to allocate memory\n", __func__, __LINE__);
         return webconfig_error_decode;
     }
 
