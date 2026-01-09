@@ -450,7 +450,7 @@ webconfig_error_t decode_anqp_object(const cJSON *anqp, wifi_interworking_t *int
 			cJSON_Delete(passPointStats);
                         return webconfig_error_eap_length;
                     }
-                    strcpy((char*)authStr,subParam_1->valuestring);
+                    snprintf((char*)authStr, sizeof(authStr), "%s", subParam_1->valuestring);
 
                     //Covert the incoming string to HEX
                     for(i = 0; i < authStrLen; i++){
@@ -3809,7 +3809,6 @@ webconfig_error_t decode_mac_object(rdk_wifi_vap_info_t *rdk_vap_info, cJSON *ob
         } else {
             memcpy(tmp_acl_entry, acl_entry, sizeof(acl_entry_t));
             free(acl_entry);
-            acl_entry = NULL;
         }
     }
 
