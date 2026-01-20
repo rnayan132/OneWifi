@@ -3158,14 +3158,14 @@ void process_channel_change_event(wifi_channel_change_event_t *ch_chg, bool is_n
         return;
     }
 
-    temp_radio_params = (wifi_radio_operationParam_t *)malloc(sizeof(wifi_radio_operationParam_t));
-    if (temp_radio_params == NULL) {
-        wifi_util_error_print(WIFI_CTRL, "%s:%d: Failed to allocate memory\n", __func__, __LINE__);
-        return;
-    }
-    memset(temp_radio_params, 0, sizeof(wifi_radio_operationParam_t));
-
     if (ch_chg->event == WIFI_EVENT_CHANNELS_CHANGED) {
+        temp_radio_params = (wifi_radio_operationParam_t *)malloc(sizeof(wifi_radio_operationParam_t));
+        if (temp_radio_params == NULL) {
+            wifi_util_error_print(WIFI_CTRL, "%s:%d: Failed to allocate memory\n", __func__, __LINE__);
+            return;
+        }
+        memset(temp_radio_params, 0, sizeof(wifi_radio_operationParam_t));
+
         temp_radio_params->band = radio_params->band;
         temp_radio_params->channel = ch_chg->channel;
         temp_radio_params->channelWidth = ch_chg->channelWidth;
@@ -3184,9 +3184,7 @@ void process_channel_change_event(wifi_channel_change_event_t *ch_chg, bool is_n
         if (wifi_radio_operationParam_validation(&g_wifidb->hal_cap, temp_radio_params) != RETURN_OK) {
             wifi_util_error_print(WIFI_CTRL,"%s:%d: channel: %d bw: %d on radio: %d could not be set\n",
                 __FUNCTION__, __LINE__, ch_chg->channel, ch_chg->channelWidth, ch_chg->radioIndex);
-            free(temp_radio_params);
-            temp_radio_params = NULL;
-            return;
+            goto cleanup;
         }
         ext_svc->event_fn(ext_svc, wifi_event_type_hal_ind, wifi_event_hal_channel_change, vap_svc_event_none, ch_chg);
     }
@@ -3210,9 +3208,7 @@ void process_channel_change_event(wifi_channel_change_event_t *ch_chg, bool is_n
 
     if ((ch_chg->event == WIFI_EVENT_CHANNELS_CHANGED) && ((radio_params->channel == ch_chg->channel)
                 && (radio_params->channelWidth == ch_chg->channelWidth))) {
-        free(temp_radio_params);
-        temp_radio_params = NULL;
-        return;
+        goto cleanup;
     }
 
     wifi_util_dbg_print(WIFI_CTRL,"%s:%d channel change: old channelWidth:%d new channelWidth:%d\r\n",
@@ -3232,9 +3228,7 @@ void process_channel_change_event(wifi_channel_change_event_t *ch_chg, bool is_n
                 wifi_util_info_print(WIFI_CTRL,"%s:%d: wifi radio parameter set success: radio_index:%d\n",
                     __FUNCTION__, __LINE__, ch_chg->radioIndex);
             }
-            free(temp_radio_params);
-            temp_radio_params = NULL;
-            return;
+            goto cleanup;
         }
         pthread_mutex_lock(&g_wifidb->data_cache_lock);
         radio_params->channel = ch_chg->channel;
@@ -3258,16 +3252,12 @@ void process_channel_change_event(wifi_channel_change_event_t *ch_chg, bool is_n
         if (l_radio == NULL) {
             wifi_util_error_print(WIFI_CTRL,"%s:%d radio strucutre is not present for radio %d\n",
                                 __FUNCTION__, __LINE__,  ch_chg->radioIndex);
-            free(temp_radio_params);
-            temp_radio_params = NULL;
-            return;
+            goto cleanup;
         }
 
         if( ((ch_chg->channel >= 36 && ch_chg->channel < 52) && (ch_chg->channelWidth != WIFI_CHANNELBANDWIDTH_160MHZ )) || (ch_chg->channel > 144 && ch_chg->channel <= 165) ) {
             wifi_util_error_print(WIFI_CTRL,"%s: Wrong radar in radio_index:%d chan:%u \n",__FUNCTION__, ch_chg->radioIndex, ch_chg->channel);
-            free(temp_radio_params);
-            temp_radio_params = NULL;
-            return ;
+            goto cleanup;
         }
 
         switch (ch_chg->sub_event)
@@ -3399,12 +3389,8 @@ void process_channel_change_event(wifi_channel_change_event_t *ch_chg, bool is_n
         }
     } else {
         wifi_util_error_print(WIFI_CTRL,"%s: Invalid event for radio %d\n",__FUNCTION__, ch_chg->radioIndex);
-        free(temp_radio_params);
-        temp_radio_params = NULL;
-        return;
+        goto cleanup;
     }
-    free(temp_radio_params);
-    temp_radio_params = NULL;
 
     data = (wifi_monitor_data_t *)calloc(1, sizeof(wifi_monitor_data_t));
     if (data == NULL) {
@@ -3423,6 +3409,12 @@ void process_channel_change_event(wifi_channel_change_event_t *ch_chg, bool is_n
     g_wifidb->ctrl.webconfig_state |= ctrl_webconfig_state_radio_cfg_rsp_pending;
     start_wifi_sched_timer(ch_chg->radioIndex, ctrl, wifi_radio_sched);
     update_wifi_radio_config(ch_chg->radioIndex, radio_params, radio_feat);
+
+cleanup:
+    if (temp_radio_params != NULL) {
+        free(temp_radio_params);
+    }
+    temp_radio_params = NULL;
 }
 
 #define MAX_NEIGHBOURS 250

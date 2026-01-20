@@ -2081,7 +2081,7 @@ int wifidb_get_wifi_radio_config(int radio_index, wifi_radio_operationParam_t *c
     char *tmp, *ptr;
     wifi_db_t *g_wifidb;
     g_wifidb = (wifi_db_t*) get_wifidb_obj();
-    wifi_radio_operationParam_t oper_radio;
+    wifi_radio_operationParam_t *oper_radio = NULL;
     static bool is_bootup = TRUE;
     wifi_rfc_dml_parameters_t *rfc_param = get_wifi_db_rfc_parameters();
 
@@ -2118,13 +2118,19 @@ int wifidb_get_wifi_radio_config(int radio_index, wifi_radio_operationParam_t *c
     config->enable = cfg->enabled;
     config->autoChannelEnabled = cfg->auto_channel_enabled;
 
-    memset(&oper_radio,0,sizeof(wifi_radio_operationParam_t));
-    oper_radio.band = band;
-    oper_radio.channel = cfg->channel;
-    oper_radio.channelWidth = cfg->channel_width;
-    oper_radio.DfsEnabled = cfg->dfs_enabled;
+    oper_radio = (wifi_radio_operationParam_t *)malloc(sizeof(wifi_radio_operationParam_t));
+    if (oper_radio == NULL) {
+        wifi_util_error_print(WIFI_DB, "%s:%d: Failed to allocate memory\n", __func__, __LINE__); 
+        return RETURN_ERR;
+    }
+    memset(oper_radio,0,sizeof(wifi_radio_operationParam_t));
 
-    if (wifi_radio_operationParam_validation(&((wifi_mgr_t*) get_wifimgr_obj())->hal_cap, &oper_radio) == RETURN_OK) {
+    oper_radio->band = band;
+    oper_radio->channel = cfg->channel;
+    oper_radio->channelWidth = cfg->channel_width;
+    oper_radio->DfsEnabled = cfg->dfs_enabled;
+
+    if (wifi_radio_operationParam_validation(&((wifi_mgr_t*) get_wifimgr_obj())->hal_cap, oper_radio) == RETURN_OK) {
         if((is_bootup) && (config->band == WIFI_FREQUENCY_5L_BAND
           || config->band == WIFI_FREQUENCY_5H_BAND || config->band == WIFI_FREQUENCY_5_BAND)) {
             is_bootup = FALSE;
@@ -2144,6 +2150,9 @@ int wifidb_get_wifi_radio_config(int radio_index, wifi_radio_operationParam_t *c
     else {
         wifi_util_info_print(WIFI_DB,"%s:%d Validation of channel/channel_width of existing DB failed, setting default values chan=%d chanwidth=%d \n", __func__, __LINE__, config->channel, config->channelWidth);
     }
+
+    free(oper_radio);
+    oper_radio = NULL;
 
     if ((cfg->hw_mode != 0) && (validate_wifi_hw_variant(cfg->freq_band, cfg->hw_mode) == RETURN_OK)) {
         config->variant = cfg->hw_mode;
@@ -6869,144 +6878,149 @@ int wifidb_init_radio_config_default(int radio_index,wifi_radio_operationParam_t
     char country_code[COUNTRY_CODE_LEN] = {0};
     wifi_mgr_t *g_wifidb;
     g_wifidb = get_wifimgr_obj();
-    wifi_radio_operationParam_t cfg;
+    wifi_radio_operationParam_t *cfg = NULL;
     wifi_countrycode_type_t country_code_val;
     wifi_radio_feature_param_t Fcfg;
     memset(&Fcfg,0,sizeof(Fcfg));
-    memset(&cfg,0,sizeof(cfg));
     wifi_ctrl_t *ctrl = get_wifictrl_obj();
 
     wifi_radio_capabilities_t radio_capab = g_wifidb->hal_cap.wifi_prop.radiocap[radio_index];
 
+    cfg = (wifi_radio_operationParam_t *)malloc(sizeof(wifi_radio_operationParam_t));
+    if (cfg == NULL) {
+        wifi_util_error_print(WIFI_DB, "%s:%d: Failed to allocate memory\n", __func__, __LINE__);
+        return RETURN_ERR;
+    }
+    memset(cfg, 0, sizeof(wifi_radio_operationParam_t));
     if (convert_radio_index_to_freq_band(&rdk_wifi_get_hal_capability_map()->wifi_prop, radio_index,
         &band) == RETURN_ERR)
     {
         wifi_util_error_print(WIFI_DB,"%s:%d Failed to convert radio index %d to band, use default\n", __func__,
             __LINE__, radio_index);
-        cfg.band = WIFI_FREQUENCY_2_4_BAND;
+        cfg->band = WIFI_FREQUENCY_2_4_BAND;
     }
     else
     {
-        cfg.band = band;
+        cfg->band = band;
     }
 
-    cfg.enable = true;
+    cfg->enable = true;
 
-    switch (cfg.band) {
+    switch (cfg->band) {
         case WIFI_FREQUENCY_2_4_BAND:
-            cfg.operatingClass = 81;
+            cfg->operatingClass = 81;
             if (ctrl->network_mode == rdk_dev_mode_type_em_node)
-                cfg.channel = 6;
+                cfg->channel = 6;
             else
-                cfg.channel = 1;
-            cfg.channelWidth = WIFI_CHANNELBANDWIDTH_20MHZ;
+                cfg->channel = 1;
+            cfg->channelWidth = WIFI_CHANNELBANDWIDTH_20MHZ;
 #if defined(_XER5_PRODUCT_REQ_)
-            cfg.variant = WIFI_80211_VARIANT_G | WIFI_80211_VARIANT_N | WIFI_80211_VARIANT_AX;
+            cfg->variant = WIFI_80211_VARIANT_G | WIFI_80211_VARIANT_N | WIFI_80211_VARIANT_AX;
 #else
-            cfg.variant = WIFI_80211_VARIANT_G | WIFI_80211_VARIANT_N;
+            cfg->variant = WIFI_80211_VARIANT_G | WIFI_80211_VARIANT_N;
 #endif
 #if defined (NEWPLATFORM_PORT) || defined (_GREXT02ACTS_PRODUCT_REQ_)
-            cfg.variant |= WIFI_80211_VARIANT_AX;
+            cfg->variant |= WIFI_80211_VARIANT_AX;
 #endif /* NEWPLATFORM_PORT */
 
 #if defined(CONFIG_IEEE80211BE)
 #if defined(_PLATFORM_BANANAPI_R4_) || defined(_GREXT02ACTS_PRODUCT_REQ_)
-            cfg.variant |= WIFI_80211_VARIANT_BE;
+            cfg->variant |= WIFI_80211_VARIANT_BE;
 #endif
 #if defined(_PLATFORM_BANANAPI_R4_)
-            cfg.channelWidth = WIFI_CHANNELBANDWIDTH_40MHZ; 
+            cfg->channelWidth = WIFI_CHANNELBANDWIDTH_40MHZ; 
 #endif  /* defined(_PLATFORM_BANANAPI_R4_) */
 #endif /* defined(CONFIG_IEEE80211BE) */
 
 
 #if defined (_PP203X_PRODUCT_REQ_) || defined (_GREXT02ACTS_PRODUCT_REQ_)
-            cfg.beaconInterval = 100;
+            cfg->beaconInterval = 100;
 #endif
             break;
         case WIFI_FREQUENCY_5_BAND:
         case WIFI_FREQUENCY_5L_BAND:
-            cfg.operatingClass = 128;
+            cfg->operatingClass = 128;
 #if defined (_PP203X_PRODUCT_REQ_) || defined (_GREXT02ACTS_PRODUCT_REQ_)
-            cfg.beaconInterval = 100;
+            cfg->beaconInterval = 100;
 #endif
             if (ctrl->network_mode == rdk_dev_mode_type_em_node)
-                cfg.channel = 36;
+                cfg->channel = 36;
             else
-                cfg.channel = 44;
-            cfg.channelWidth = WIFI_CHANNELBANDWIDTH_80MHZ;
+                cfg->channel = 44;
+            cfg->channelWidth = WIFI_CHANNELBANDWIDTH_80MHZ;
 #if defined (_PP203X_PRODUCT_REQ_)
-            cfg.variant = WIFI_80211_VARIANT_A | WIFI_80211_VARIANT_N | WIFI_80211_VARIANT_AC;
-            cfg.DfsEnabled = true;
+            cfg->variant = WIFI_80211_VARIANT_A | WIFI_80211_VARIANT_N | WIFI_80211_VARIANT_AC;
+            cfg->DfsEnabled = true;
 #elif defined (_GREXT02ACTS_PRODUCT_REQ_)
-	    cfg.variant = WIFI_80211_VARIANT_A | WIFI_80211_VARIANT_N | WIFI_80211_VARIANT_AC | WIFI_80211_VARIANT_AX;
-	    cfg.DfsEnabled = true;
+	    cfg->variant = WIFI_80211_VARIANT_A | WIFI_80211_VARIANT_N | WIFI_80211_VARIANT_AC | WIFI_80211_VARIANT_AX;
+	    cfg->DfsEnabled = true;
 #elif defined (_HUB4_PRODUCT_REQ_) && !defined (_SR213_PRODUCT_REQ_)
-            cfg.variant = WIFI_80211_VARIANT_A | WIFI_80211_VARIANT_N | WIFI_80211_VARIANT_AC;
+            cfg->variant = WIFI_80211_VARIANT_A | WIFI_80211_VARIANT_N | WIFI_80211_VARIANT_AC;
 #else
-            cfg.variant = WIFI_80211_VARIANT_A | WIFI_80211_VARIANT_N | WIFI_80211_VARIANT_AC | WIFI_80211_VARIANT_AX;
+            cfg->variant = WIFI_80211_VARIANT_A | WIFI_80211_VARIANT_N | WIFI_80211_VARIANT_AC | WIFI_80211_VARIANT_AX;
 #endif
 #ifdef CONFIG_IEEE80211BE
-            cfg.variant |= WIFI_80211_VARIANT_BE;
+            cfg->variant |= WIFI_80211_VARIANT_BE;
 #endif /* CONFIG_IEEE80211BE */
             break;
         case WIFI_FREQUENCY_5H_BAND:
-            cfg.operatingClass = 128;
-            cfg.channel = 157;
-            cfg.channelWidth = WIFI_CHANNELBANDWIDTH_80MHZ;
+            cfg->operatingClass = 128;
+            cfg->channel = 157;
+            cfg->channelWidth = WIFI_CHANNELBANDWIDTH_80MHZ;
 #if defined (_PP203X_PRODUCT_REQ_) || defined (_GREXT02ACTS_PRODUCT_REQ_)
-            cfg.variant = WIFI_80211_VARIANT_A | WIFI_80211_VARIANT_N | WIFI_80211_VARIANT_AC;
-            cfg.beaconInterval = 200;
-            cfg.DfsEnabled = true;
+            cfg->variant = WIFI_80211_VARIANT_A | WIFI_80211_VARIANT_N | WIFI_80211_VARIANT_AC;
+            cfg->beaconInterval = 200;
+            cfg->DfsEnabled = true;
 #else
-            cfg.variant = WIFI_80211_VARIANT_A | WIFI_80211_VARIANT_N | WIFI_80211_VARIANT_AC | WIFI_80211_VARIANT_AX;
+            cfg->variant = WIFI_80211_VARIANT_A | WIFI_80211_VARIANT_N | WIFI_80211_VARIANT_AC | WIFI_80211_VARIANT_AX;
 #endif
 
 #ifdef CONFIG_IEEE80211BE
-            cfg.variant |= WIFI_80211_VARIANT_BE;
+            cfg->variant |= WIFI_80211_VARIANT_BE;
 #endif /* CONFIG_IEEE80211BE */
             break;
         case WIFI_FREQUENCY_6_BAND:
-            cfg.operatingClass = 134;
+            cfg->operatingClass = 134;
 #ifndef _PLATFORM_BANANAPI_R4_
-            cfg.channel = 5;
+            cfg->channel = 5;
 #else
-            cfg.channel = 37;
+            cfg->channel = 37;
 #endif /* _PLATFORM_BANANAPI_R4_ */
-            cfg.channelWidth = WIFI_CHANNELBANDWIDTH_160MHZ;
-            cfg.variant = WIFI_80211_VARIANT_AX;
+            cfg->channelWidth = WIFI_CHANNELBANDWIDTH_160MHZ;
+            cfg->variant = WIFI_80211_VARIANT_AX;
 
 #ifdef CONFIG_IEEE80211BE
-            cfg.variant |= WIFI_80211_VARIANT_BE;
+            cfg->variant |= WIFI_80211_VARIANT_BE;
 #ifndef _PLATFORM_BANANAPI_R4_
-            cfg.operatingClass = 137;
-            cfg.channelWidth = WIFI_CHANNELBANDWIDTH_320MHZ;
+            cfg->operatingClass = 137;
+            cfg->channelWidth = WIFI_CHANNELBANDWIDTH_320MHZ;
 #endif /* _PLATFORM_BANANAPI_R4_ */
 #endif /* CONFIG_IEEE80211BE */
             break;
         default:
             wifi_util_error_print(WIFI_DB,"%s:%d radio index %d, invalid band %d\n", __func__,
-            __LINE__, radio_index, cfg.band);
+            __LINE__, radio_index, cfg->band);
             break;
     }
 
     for (int i=0; i<radio_capab.channel_list[0].num_channels; i++)
     {
-        cfg.channel_map[i].ch_number = radio_capab.channel_list[0].channels_list[i];
-        if ( (cfg.band == WIFI_FREQUENCY_5_BAND || cfg.band == WIFI_FREQUENCY_5L_BAND || cfg.band == WIFI_FREQUENCY_5H_BAND ) && ((radio_capab.channel_list[0].channels_list[i] >= 52) && (radio_capab.channel_list[0].channels_list[i] <= 144))) {
-            cfg.channel_map[i].ch_state = CHAN_STATE_DFS_NOP_FINISHED;
+        cfg->channel_map[i].ch_number = radio_capab.channel_list[0].channels_list[i];
+        if ( (cfg->band == WIFI_FREQUENCY_5_BAND || cfg->band == WIFI_FREQUENCY_5L_BAND || cfg->band == WIFI_FREQUENCY_5H_BAND ) && ((radio_capab.channel_list[0].channels_list[i] >= 52) && (radio_capab.channel_list[0].channels_list[i] <= 144))) {
+            cfg->channel_map[i].ch_state = CHAN_STATE_DFS_NOP_FINISHED;
         } else {
-            cfg.channel_map[i].ch_state = CHAN_STATE_AVAILABLE;
+            cfg->channel_map[i].ch_state = CHAN_STATE_AVAILABLE;
         }
     }
-    cfg.autoChannelEnabled = true;
+    cfg->autoChannelEnabled = true;
     for(int i=0 ;i<MAX_NUM_CHANNELBANDWIDTH_SUPPORTED;i++)
     {
-        cfg.channels_per_bandwidth[i].num_channels_list = 0;
-        memset(cfg.channels_per_bandwidth[i].channels_list,0,sizeof(cfg.channels_per_bandwidth[i].channels_list));
-        cfg.channels_per_bandwidth[i].chanwidth = 0;
+        cfg->channels_per_bandwidth[i].num_channels_list = 0;
+        memset(cfg->channels_per_bandwidth[i].channels_list,0,sizeof(cfg->channels_per_bandwidth[i].channels_list));
+        cfg->channels_per_bandwidth[i].chanwidth = 0;
     }
-    cfg.acs_keep_out_reset = false;
-    cfg.csa_beacon_count = 100;
+    cfg->acs_keep_out_reset = false;
+    cfg->csa_beacon_count = 100;
     country_code_val = wifi_countrycode_US;
     if (wifi_hal_get_default_country_code(country_code) < 0) {
         wifi_util_dbg_print(WIFI_DB,"%s:%d: unable to get default country code setting a US\n", __func__, __LINE__);
@@ -7016,42 +7030,42 @@ int wifidb_init_radio_config_default(int radio_index,wifi_radio_operationParam_t
         }
     }
 
-    if (wifi_hal_get_RegDomain(radio_index, &cfg.regDomain) != RETURN_OK) {
+    if (wifi_hal_get_RegDomain(radio_index, &cfg->regDomain) != RETURN_OK) {
         wifi_util_error_print(WIFI_DB, "%s:%d: unable to get regulatory domain for radio%d\n",
             __func__, __LINE__, radio_index);
     }
 
-    cfg.countryCode = country_code_val;
-    cfg.operatingEnvironment = wifi_operating_env_indoor;
-    cfg.dtimPeriod = 1;
-    if (cfg.beaconInterval == 0) {
-        cfg.beaconInterval = 100;
+    cfg->countryCode = country_code_val;
+    cfg->operatingEnvironment = wifi_operating_env_indoor;
+    cfg->dtimPeriod = 1;
+    if (cfg->beaconInterval == 0) {
+        cfg->beaconInterval = 100;
     }
-    cfg.fragmentationThreshold = 2346;
-    cfg.transmitPower = 100;
-    cfg.rtsThreshold = 2347;
-    cfg.guardInterval = wifi_guard_interval_auto;
-    cfg.ctsProtection = false;
-    cfg.obssCoex = true;
-    cfg.stbcEnable = true;
-    cfg.greenFieldEnable = false;
-    cfg.userControl = 0;
-    cfg.adminControl = 0;
-    cfg.chanUtilThreshold = 90;
-    cfg.chanUtilSelfHealEnable = 0;
-    cfg.EcoPowerDown = false;
-    cfg.factoryResetSsid = 0;
-    if ((is_device_type_sr213() == true) && (WIFI_FREQUENCY_2_4_BAND == cfg.band)) {
-        cfg.basicDataTransmitRates = WIFI_BITRATE_1MBPS | WIFI_BITRATE_2MBPS |
+    cfg->fragmentationThreshold = 2346;
+    cfg->transmitPower = 100;
+    cfg->rtsThreshold = 2347;
+    cfg->guardInterval = wifi_guard_interval_auto;
+    cfg->ctsProtection = false;
+    cfg->obssCoex = true;
+    cfg->stbcEnable = true;
+    cfg->greenFieldEnable = false;
+    cfg->userControl = 0;
+    cfg->adminControl = 0;
+    cfg->chanUtilThreshold = 90;
+    cfg->chanUtilSelfHealEnable = 0;
+    cfg->EcoPowerDown = false;
+    cfg->factoryResetSsid = 0;
+    if ((is_device_type_sr213() == true) && (WIFI_FREQUENCY_2_4_BAND == cfg->band)) {
+        cfg->basicDataTransmitRates = WIFI_BITRATE_1MBPS | WIFI_BITRATE_2MBPS |
             WIFI_BITRATE_5_5MBPS | WIFI_BITRATE_11MBPS;
     } else {
-        cfg.basicDataTransmitRates = WIFI_BITRATE_6MBPS | WIFI_BITRATE_12MBPS | WIFI_BITRATE_24MBPS;
+        cfg->basicDataTransmitRates = WIFI_BITRATE_6MBPS | WIFI_BITRATE_12MBPS | WIFI_BITRATE_24MBPS;
     }
-    cfg.operationalDataTransmitRates = WIFI_BITRATE_6MBPS | WIFI_BITRATE_9MBPS | WIFI_BITRATE_12MBPS | WIFI_BITRATE_18MBPS | WIFI_BITRATE_24MBPS | WIFI_BITRATE_36MBPS | WIFI_BITRATE_48MBPS | WIFI_BITRATE_54MBPS;
+    cfg->operationalDataTransmitRates = WIFI_BITRATE_6MBPS | WIFI_BITRATE_9MBPS | WIFI_BITRATE_12MBPS | WIFI_BITRATE_18MBPS | WIFI_BITRATE_24MBPS | WIFI_BITRATE_36MBPS | WIFI_BITRATE_48MBPS | WIFI_BITRATE_54MBPS;
     Fcfg.radio_index = radio_index;
-    cfg.DFSTimer = DFS_DEFAULT_TIMER_IN_MIN;
-    strncpy(cfg.radarDetected, " ", sizeof(cfg.radarDetected));
-    if (is_radio_band_5G(cfg.band)) {
+    cfg->DFSTimer = DFS_DEFAULT_TIMER_IN_MIN;
+    strncpy(cfg->radarDetected, " ", sizeof(cfg->radarDetected));
+    if (is_radio_band_5G(cfg->band)) {
         Fcfg.OffChanTscanInMsec = OFFCHAN_DEFAULT_TSCAN_IN_MSEC;
         Fcfg.OffChanNscanInSec = OFFCHAN_DEFAULT_NSCAN_IN_SEC;
         Fcfg.OffChanTidleInSec = OFFCHAN_DEFAULT_TIDLE_IN_SEC;
@@ -7062,35 +7076,38 @@ int wifidb_init_radio_config_default(int radio_index,wifi_radio_operationParam_t
     }
 
     for (int j = 0; j < MAX_AMSDU_TID; j++) {
-        cfg.amsduTid[j] = FALSE;
+        cfg->amsduTid[j] = FALSE;
     }
 
 #if defined(_XB10_PRODUCT_REQ_) || defined(_SCER11BEL_PRODUCT_REQ_) || defined(_SCXF11BFL_PRODUCT_REQ_)
-    if (cfg.band == WIFI_FREQUENCY_6_BAND) {
+    if (cfg->band == WIFI_FREQUENCY_6_BAND) {
         for (int i = 0; i < 5; i++)
         {
-            cfg.amsduTid[i] = TRUE;
+            cfg->amsduTid[i] = TRUE;
         }
     } else {
         for (int i = 0; i < 4; i++)
         {
-            cfg.amsduTid[i] = TRUE;
+            cfg->amsduTid[i] = TRUE;
         }
     }
 #elif defined(_XB8_PRODUCT_REQ_)
-    cfg.amsduTid[0] = TRUE;
-    if (cfg.band == WIFI_FREQUENCY_6_BAND) {
-        cfg.amsduTid[4] = TRUE;
+    cfg->amsduTid[0] = TRUE;
+    if (cfg->band == WIFI_FREQUENCY_6_BAND) {
+        cfg->amsduTid[4] = TRUE;
     }
 #endif
 
     wifi_util_dbg_print(WIFI_WEBCONFIG,"%s:%d Tscan:%lu Nscan:%lu Nidle:%lu\n", __func__, __LINE__, Fcfg.OffChanTscanInMsec, Fcfg.OffChanNscanInSec, Fcfg.OffChanTidleInSec);
     /* Call the function to update the operating classes based on Country code and Radio */
-    update_radio_operating_classes(&cfg);
+    update_radio_operating_classes(cfg);
     pthread_mutex_lock(&g_wifidb->data_cache_lock);
-    memcpy(config,&cfg,sizeof(cfg));
+    memcpy(config, cfg, sizeof(wifi_radio_operationParam_t));
     memcpy(feat_config, &Fcfg, sizeof(Fcfg));
     pthread_mutex_unlock(&g_wifidb->data_cache_lock);
+
+    free(cfg);
+    cfg = NULL;
     return RETURN_OK;
 }
 
