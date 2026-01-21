@@ -1040,6 +1040,7 @@ ANSC_STATUS wifiRadioChannelIsValid(UINT radioIndex, UINT inputChannel)
     wifi_radio_operationParam_t *wifiRadioOperParam = NULL;
     wifi_radio_operationParam_t *l_pcfg = NULL;
 
+    wifi_util_info_print(WIFI_CTRL, "%s:%d RTesting Entry\n", __func__, __LINE__);
     //Get the radio capability for further comparision
     wifiRadioCap = getRadioCapability(radioIndex);
     if (wifiRadioCap == NULL)
@@ -1096,6 +1097,7 @@ ANSC_STATUS wifiRadioChannelIsValid(UINT radioIndex, UINT inputChannel)
         }
     }
     CcspWifiTrace(("RDK_LOG_ERROR, %s Failed for radioIndex : %d for InputChannel : %d\n", __FUNCTION__, radioIndex, inputChannel));
+    wifi_util_info_print(WIFI_CTRL, "%s:%d RTesting Exit\n", __func__, __LINE__);
     return ANSC_STATUS_FAILURE;
 }
 

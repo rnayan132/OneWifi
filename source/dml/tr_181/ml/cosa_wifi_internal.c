@@ -305,6 +305,7 @@ void CosaDmlWiFiGetFromPSM(void)
     wifi_global_param_t global_cfg;
     UINT vap_index;
 
+    wifi_util_info_print(WIFI_PSM, "%s:%d RTesting Entry\n", __func__, __LINE__);
     init_mac_filter_hash_map();
 
     radio_cfg = (wifi_radio_operationParam_t *)malloc(sizeof(wifi_radio_operationParam_t));
@@ -939,6 +940,7 @@ void CosaDmlWiFiGetFromPSM(void)
 
     snprintf(psm_global_param->wps_pin, sizeof(psm_global_param->wps_pin), "%s", global_cfg.wps_pin);
     wifi_util_dbg_print(WIFI_PSM,":%s:%d set default value for WpsPin: %d : %d\r\n", __func__, __LINE__, global_cfg.wps_pin, psm_global_param->wps_pin);
+    wifi_util_info_print(WIFI_PSM, "%s:%d RTesting Exit\n", __func__, __LINE__);
 }
 
 void CosaDmlWiFiGetExternalDataFromPSM(void)

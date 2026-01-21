@@ -1611,6 +1611,7 @@ static int apply_pending_channel_change(vap_svc_t *svc, int vap_index)
     vap_svc_ext_t *ext = &svc->u.ext;
     wifi_mgr_t *mgr = (wifi_mgr_t *)get_wifimgr_obj();
 
+    wifi_util_info_print(WIFI_CTRL, "%s:%d RTesting Entry\n", __func__, __LINE__);
     if ((ext->channel_change_pending_map & (1 << vap_index)) == 0) {
         return RETURN_OK;
     }
@@ -1657,6 +1658,7 @@ static int apply_pending_channel_change(vap_svc_t *svc, int vap_index)
 
     free(temp_radio_params);
     temp_radio_params = NULL;
+    wifi_util_info_print(WIFI_CTRL, "%s:%d RTesting Exit\n", __func__, __LINE__);
     return RETURN_OK;
 }
 

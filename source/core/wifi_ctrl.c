@@ -86,6 +86,7 @@ static int wifi_radio_set_enable(bool status)
     uint8_t num_of_radios = getNumberRadios();
     wifi_radio_operationParam_t *temp_wifi_radio_oper_param = NULL;
 
+    wifi_util_info_print(WIFI_CTRL, "%s:%d RTesting Entry\n", __func__, __LINE__);
     temp_wifi_radio_oper_param = (wifi_radio_operationParam_t *)malloc(sizeof(wifi_radio_operationParam_t));
     if (temp_wifi_radio_oper_param == NULL) {
         wifi_util_error_print(WIFI_CTRL, "%s:%d: Failed to allocate memory\n", __func__, __LINE__);
@@ -123,6 +124,7 @@ static int wifi_radio_set_enable(bool status)
 
     free(temp_wifi_radio_oper_param);
     temp_wifi_radio_oper_param = NULL;
+    wifi_util_info_print(WIFI_CTRL, "%s:%d RTesting Exit\n", __func__, __LINE__);
     return ret;
 }
 

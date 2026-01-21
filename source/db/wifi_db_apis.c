@@ -2085,6 +2085,7 @@ int wifidb_get_wifi_radio_config(int radio_index, wifi_radio_operationParam_t *c
     static bool is_bootup = TRUE;
     wifi_rfc_dml_parameters_t *rfc_param = get_wifi_db_rfc_parameters();
 
+    wifi_util_info_print(WIFI_CTRL, "%s:%d RTesting Entry\n", __func__, __LINE__);
     if((config == NULL) || (convert_radio_to_name(radio_index,name)!=0))
     {
         wifidb_print("%s:%d Failed to Get Radio Config \n",__func__, __LINE__);
@@ -2230,6 +2231,7 @@ int wifidb_get_wifi_radio_config(int radio_index, wifi_radio_operationParam_t *c
     wifi_util_dbg_print(WIFI_DB,"%s:%d: Wifi_Radio_Config data enabled=%d freq_band=%d auto_channel_enabled=%d channel=%d  channel_width=%d hw_mode=%d csa_beacon_count=%d country=%d operatingEnvironment=%d dcs_enabled=%d numSecondaryChannels=%d channelSecondary=%s dtim_period %d beacon_interval %d operating_class %d basic_data_transmit_rate %d operational_data_transmit_rate %d  fragmentation_threshold %d guard_interval %d transmit_power %d rts_threshold %d factory_reset_ssid = %d, radio_stats_measuring_rate = %d, radio_stats_measuring_interval = %d, cts_protection %d, obss_coex= %d, stbc_enable= %d, greenfield_enable= %d, user_control= %d, admin_control= %d,chan_util_threshold= %d, chan_util_selfheal_enable= %d, eco_power_down=%d DFSTimer:%d radarDetected:%s, amsduTid:[%d, %d, %d, %d, %d, %d, %d, %d]\n",__func__, __LINE__,config->enable,config->band,config->autoChannelEnabled,config->channel,config->channelWidth,config->variant,config->csa_beacon_count,config->countryCode,config->operatingEnvironment,config->DCSEnabled,config->numSecondaryChannels,cfg->secondary_channels_list,config->dtimPeriod,config->beaconInterval,config->operatingClass,config->basicDataTransmitRates,config->operationalDataTransmitRates,config->fragmentationThreshold,config->guardInterval,config->transmitPower,config->rtsThreshold,config->factoryResetSsid,config->radioStatsMeasuringInterval,config->radioStatsMeasuringInterval,config->ctsProtection,config->obssCoex,config->stbcEnable,config->greenFieldEnable,config->userControl,config->adminControl,config->chanUtilThreshold,config->chanUtilSelfHealEnable, config->EcoPowerDown, config->DFSTimer, config->radarDetected, config->amsduTid[0], config->amsduTid[1], config->amsduTid[2], config->amsduTid[3], config->amsduTid[4], config->amsduTid[5], config->amsduTid[6], config->amsduTid[7]);
     wifi_util_dbg_print(WIFI_DB, " %s:%d Wifi_Radio_Config data Tscan=%lu Nscan=%lu Tidle=%lu \n", __FUNCTION__, __LINE__, feat_config->OffChanTscanInMsec, feat_config->OffChanNscanInSec, feat_config->OffChanTidleInSec);
     free(cfg);
+    wifi_util_info_print(WIFI_CTRL, "%s:%d RTesting Exit\n", __func__, __LINE__);
     return RETURN_OK;
 }
 
@@ -5270,6 +5272,7 @@ void rdk_wifi_radio_get_status(uint8_t r_index, bool *status)
     wifi_radio_operationParam_t *radio_vap_map = NULL;
     wifi_radio_feature_param_t radio_feat;
 
+    wifi_util_info_print(WIFI_CTRL, "%s:%d RTesting Entry\n", __func__, __LINE__);
     radio_vap_map = (wifi_radio_operationParam_t *)malloc(sizeof(wifi_radio_operationParam_t));
     if (radio_vap_map == NULL) {
         rdk_wifi_dbg_print(1, "%s:%d: Failed to allocate memory\n", __func__, __LINE__);
@@ -5285,6 +5288,7 @@ void rdk_wifi_radio_get_status(uint8_t r_index, bool *status)
 
     free(radio_vap_map);
     radio_vap_map = NULL;
+    wifi_util_info_print(WIFI_CTRL, "%s:%d RTesting Exit\n", __func__, __LINE__);
 }
 
 void rdk_wifi_radio_get_autochannel_status(uint8_t r_index, bool *autochannel_status)
@@ -5292,6 +5296,7 @@ void rdk_wifi_radio_get_autochannel_status(uint8_t r_index, bool *autochannel_st
     wifi_radio_operationParam_t *radio_vap_map = NULL;
     wifi_radio_feature_param_t radio_feat;
 
+    wifi_util_info_print(WIFI_CTRL, "%s:%d RTesting Entry\n", __func__, __LINE__);
     radio_vap_map = (wifi_radio_operationParam_t *)malloc(sizeof(wifi_radio_operationParam_t));
     if (radio_vap_map == NULL) {
         rdk_wifi_dbg_print(1, "%s:%d: Failed to allocate memory\n", __func__, __LINE__);
@@ -5306,6 +5311,7 @@ void rdk_wifi_radio_get_autochannel_status(uint8_t r_index, bool *autochannel_st
 
     free(radio_vap_map);
     radio_vap_map = NULL;
+    wifi_util_info_print(WIFI_CTRL, "%s:%d RTesting Exit\n", __func__, __LINE__);
 }
 
 void rdk_wifi_radio_get_frequency_band(uint8_t r_index, char *band)
@@ -5313,6 +5319,7 @@ void rdk_wifi_radio_get_frequency_band(uint8_t r_index, char *band)
     wifi_radio_operationParam_t *radio_vap_map = NULL;
     wifi_radio_feature_param_t radio_feat;
 
+    wifi_util_info_print(WIFI_CTRL, "%s:%d RTesting Entry\n", __func__, __LINE__);
     radio_vap_map = (wifi_radio_operationParam_t *)malloc(sizeof(wifi_radio_operationParam_t));
     if (radio_vap_map == NULL) {
         rdk_wifi_dbg_print(1, "%s:%d: Failed to allocate memory\n", __func__, __LINE__);
@@ -5333,6 +5340,7 @@ void rdk_wifi_radio_get_frequency_band(uint8_t r_index, char *band)
 
     free(radio_vap_map);
     radio_vap_map = NULL;
+    wifi_util_info_print(WIFI_CTRL, "%s:%d RTesting Exit\n", __func__, __LINE__);
 }
 
 void rdk_wifi_radio_get_dcs_status(uint8_t r_index, bool *dcs_status)
@@ -5340,6 +5348,7 @@ void rdk_wifi_radio_get_dcs_status(uint8_t r_index, bool *dcs_status)
     wifi_radio_operationParam_t *radio_vap_map = NULL;
     wifi_radio_feature_param_t radio_feat;
 
+    wifi_util_info_print(WIFI_CTRL, "%s:%d RTesting Entry\n", __func__, __LINE__);
     radio_vap_map = (wifi_radio_operationParam_t *)malloc(sizeof(wifi_radio_operationParam_t));
     if (radio_vap_map == NULL) {
         rdk_wifi_dbg_print(1, "%s:%d: Failed to allocate memory\n", __func__, __LINE__);
@@ -5355,6 +5364,7 @@ void rdk_wifi_radio_get_dcs_status(uint8_t r_index, bool *dcs_status)
 
     free(radio_vap_map);
     radio_vap_map = NULL;
+    wifi_util_info_print(WIFI_CTRL, "%s:%d RTesting Exit\n", __func__, __LINE__);
 }
 
 void rdk_wifi_radio_get_channel(uint8_t r_index, ULONG *channel)
@@ -5362,6 +5372,7 @@ void rdk_wifi_radio_get_channel(uint8_t r_index, ULONG *channel)
     wifi_radio_operationParam_t *radio_vap_map = NULL;
     wifi_radio_feature_param_t radio_feat;
 
+    wifi_util_info_print(WIFI_CTRL, "%s:%d RTesting Entry\n", __func__, __LINE__);
     radio_vap_map = (wifi_radio_operationParam_t *)malloc(sizeof(wifi_radio_operationParam_t));
     if (radio_vap_map == NULL) {
         rdk_wifi_dbg_print(1, "%s:%d: Failed to allocate memory\n", __func__, __LINE__);
@@ -5375,6 +5386,7 @@ void rdk_wifi_radio_get_channel(uint8_t r_index, ULONG *channel)
 
     free(radio_vap_map);
     radio_vap_map = NULL;
+    wifi_util_info_print(WIFI_CTRL, "%s:%d RTesting Exit\n", __func__, __LINE__);
 }
 
 void rdk_wifi_radio_get_channel_bandwidth(uint8_t r_index, ULONG *channel_bandwidth)
@@ -5382,6 +5394,7 @@ void rdk_wifi_radio_get_channel_bandwidth(uint8_t r_index, ULONG *channel_bandwi
     wifi_radio_operationParam_t *radio_vap_map = NULL;
     wifi_radio_feature_param_t radio_feat;
 
+    wifi_util_info_print(WIFI_CTRL, "%s:%d RTesting Entry\n", __func__, __LINE__);
     radio_vap_map = (wifi_radio_operationParam_t *)malloc(sizeof(wifi_radio_operationParam_t));
     if (radio_vap_map == NULL) {
         rdk_wifi_dbg_print(1, "%s:%d: Failed to allocate memory\n", __func__, __LINE__);
@@ -5395,6 +5408,7 @@ void rdk_wifi_radio_get_channel_bandwidth(uint8_t r_index, ULONG *channel_bandwi
 
     free(radio_vap_map);
     radio_vap_map = NULL;
+    wifi_util_info_print(WIFI_CTRL, "%s:%d RTesting Exit\n", __func__, __LINE__);
 }
 
 void rdk_wifi_radio_get_operating_standards(uint8_t r_index, char *buf)
@@ -5403,6 +5417,7 @@ void rdk_wifi_radio_get_operating_standards(uint8_t r_index, char *buf)
     wifi_radio_operationParam_t *radio_vap_map = NULL;
     wifi_radio_feature_param_t radio_feat;
 
+    wifi_util_info_print(WIFI_CTRL, "%s:%d RTesting Entry\n", __func__, __LINE__);
     radio_vap_map = (wifi_radio_operationParam_t *)malloc(sizeof(wifi_radio_operationParam_t));
     if (radio_vap_map == NULL) {
         rdk_wifi_dbg_print(1, "%s:%d: Failed to allocate memory\n", __func__, __LINE__);
@@ -5494,6 +5509,7 @@ void rdk_wifi_radio_get_operating_standards(uint8_t r_index, char *buf)
 
     free(radio_vap_map);
     radio_vap_map = NULL;
+    wifi_util_info_print(WIFI_CTRL, "%s:%d RTesting Exit\n", __func__, __LINE__);
 }
 
 int rdk_wifi_vap_get_from_index(int wlanIndex, wifi_vap_info_t *vap_map,
@@ -5777,6 +5793,7 @@ int rdk_wifi_radio_get_BeaconInterval(uint8_t r_index, int *BeaconInterval)
     wifi_radio_operationParam_t *radio_vap_map = NULL;
     wifi_radio_feature_param_t radio_feat;
 
+    wifi_util_info_print(WIFI_CTRL, "%s:%d RTesting Entry\n", __func__, __LINE__);
     radio_vap_map = (wifi_radio_operationParam_t *)malloc(sizeof(wifi_radio_operationParam_t));
     if (radio_vap_map == NULL) {
         rdk_wifi_dbg_print(1, "%s:%d: Failed to allocate memory\n", __func__, __LINE__);
@@ -5798,6 +5815,7 @@ int rdk_wifi_radio_get_BeaconInterval(uint8_t r_index, int *BeaconInterval)
 
     free(radio_vap_map);
     radio_vap_map = NULL;
+    wifi_util_info_print(WIFI_CTRL, "%s:%d RTesting Exit\n", __func__, __LINE__);
     return ret;
 }
 
@@ -6884,6 +6902,7 @@ int wifidb_init_radio_config_default(int radio_index,wifi_radio_operationParam_t
     memset(&Fcfg,0,sizeof(Fcfg));
     wifi_ctrl_t *ctrl = get_wifictrl_obj();
 
+    wifi_util_info_print(WIFI_CTRL, "%s:%d RTesting Entry\n", __func__, __LINE__);
     wifi_radio_capabilities_t radio_capab = g_wifidb->hal_cap.wifi_prop.radiocap[radio_index];
 
     cfg = (wifi_radio_operationParam_t *)malloc(sizeof(wifi_radio_operationParam_t));
@@ -7108,6 +7127,7 @@ int wifidb_init_radio_config_default(int radio_index,wifi_radio_operationParam_t
 
     free(cfg);
     cfg = NULL;
+    wifi_util_info_print(WIFI_CTRL, "%s:%d RTesting Exit\n", __func__, __LINE__);
     return RETURN_OK;
 }
 
@@ -9134,6 +9154,7 @@ int wifi_db_update_radio_config()
     unsigned int radio_index;
     int retval=0;
 
+    wifi_util_info_print(WIFI_CTRL, "%s:%d RTesting Entry\n", __func__, __LINE__);
     radio_cfg = (wifi_radio_operationParam_t *)malloc(sizeof(wifi_radio_operationParam_t));
     if (radio_cfg == NULL) {
         wifi_util_dbg_print(WIFI_MGR, "%s:%d: Failed to allocate memory\n", __func__, __LINE__);
@@ -9161,6 +9182,7 @@ int wifi_db_update_radio_config()
 
     free(radio_cfg);
     radio_cfg = NULL;
+    wifi_util_info_print(WIFI_CTRL, "%s:%d RTesting Exit\n", __func__, __LINE__);
 
     return RETURN_OK;
 }

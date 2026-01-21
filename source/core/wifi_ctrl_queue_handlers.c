@@ -3146,6 +3146,8 @@ void process_channel_change_event(wifi_channel_change_event_t *ch_chg, bool is_n
     int ret = 0;
     wifi_monitor_data_t *data = NULL;
 
+    wifi_util_info_print(WIFI_CTRL, "%s:%d RTesting Entry\n", __func__, __LINE__);
+
     radio_params = (wifi_radio_operationParam_t *)get_wifidb_radio_map(ch_chg->radioIndex);
     if (radio_params == NULL) {
         wifi_util_error_print(WIFI_CTRL,"%s: wrong index for radio map: %d\n",__FUNCTION__, ch_chg->radioIndex);
@@ -3410,6 +3412,7 @@ void process_channel_change_event(wifi_channel_change_event_t *ch_chg, bool is_n
     start_wifi_sched_timer(ch_chg->radioIndex, ctrl, wifi_radio_sched);
     update_wifi_radio_config(ch_chg->radioIndex, radio_params, radio_feat);
 
+    wifi_util_info_print(WIFI_CTRL, "%s:%d RTesting Exit\n", __func__, __LINE__);
 cleanup:
     if (temp_radio_params != NULL) {
         free(temp_radio_params);
