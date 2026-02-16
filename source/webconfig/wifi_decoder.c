@@ -3809,7 +3809,6 @@ webconfig_error_t decode_mac_object(rdk_wifi_vap_info_t *rdk_vap_info, cJSON *ob
         } else {
             memcpy(tmp_acl_entry, acl_entry, sizeof(acl_entry_t));
             free(acl_entry);
-            acl_entry = NULL;
         }
     }
 
