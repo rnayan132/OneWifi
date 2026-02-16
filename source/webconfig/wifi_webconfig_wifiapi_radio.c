@@ -75,6 +75,7 @@ webconfig_error_t decode_wifiapiradio_subdoc(webconfig_t *config, webconfig_subd
 
     memset(params, 0, sizeof(webconfig_subdoc_decoded_data_t));
 
+    wifi_util_info_print(WIFI_CTRL, "%s:%d: RTesting entry\n", __func__, __LINE__);
     for (i = 0; i < doc->num_objects; i++) {
         if ((cJSON_GetObjectItem(json, doc->objects[i].name)) == NULL) {
             wifi_util_error_print(WIFI_WEBCONFIG, "%s:%d: object:%s not present, validation failed\n",
@@ -129,5 +130,6 @@ webconfig_error_t decode_wifiapiradio_subdoc(webconfig_t *config, webconfig_subd
     
     cJSON_Delete(json);
     wifi_util_info_print(WIFI_WEBCONFIG, "%s:%d: decode success\n", __func__, __LINE__);
+    wifi_util_info_print(WIFI_CTRL, "%s:%d: RTesting exit\n", __func__, __LINE__);
     return webconfig_error_none;
 }

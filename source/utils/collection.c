@@ -22,6 +22,7 @@
 #include <string.h>
 #include <assert.h>
 #include "collection.h"
+#include "wifi_util.h"
 
 
 queue_t *queue_create   (void)
@@ -397,14 +398,17 @@ hash_map_t *hash_map_clone(hash_map_t *src_map, size_t data_size)
     hash_map_t *dst_map;
     void *key, *data = NULL;
 
+    wifi_util_info_print(WIFI_CTRL, "%s:%d: RTesting entry\n", __func__, __LINE__);
     if (src_map == NULL ||
         src_map->queue == NULL ||
         src_map->queue->head == NULL) {
+    wifi_util_info_print(WIFI_CTRL, "%s:%d: RTesting exit 1\n", __func__, __LINE__);
         return NULL;
     }
 
     dst_map = hash_map_create();
     if (dst_map == NULL) {
+    wifi_util_info_print(WIFI_CTRL, "%s:%d: RTesting exit 2\n", __func__, __LINE__);
         return NULL;
     }
 
@@ -413,17 +417,20 @@ hash_map_t *hash_map_clone(hash_map_t *src_map, size_t data_size)
         he = (hash_element_t *)e->data;
         if (he == NULL || he->key == NULL) {
             hash_map_destroy(dst_map);
+    wifi_util_info_print(WIFI_CTRL, "%s:%d: RTesting exit 3\n", __func__, __LINE__);
             return NULL;
         }
 
         key = strdup(he->key);
         if (key == NULL) {
             hash_map_destroy(dst_map);
+    wifi_util_info_print(WIFI_CTRL, "%s:%d: RTesting exit 4\n", __func__, __LINE__);
             return NULL;
         }
 
         if (data_size != 0 && (data = malloc(data_size)) == NULL) {
             hash_map_destroy(dst_map);
+    wifi_util_info_print(WIFI_CTRL, "%s:%d: RTesting exit 5\n", __func__, __LINE__);
             free(key);
             return NULL;
         }
@@ -434,10 +441,12 @@ hash_map_t *hash_map_clone(hash_map_t *src_map, size_t data_size)
 
         if (hash_map_put(dst_map, key, data) == -1) {
             hash_map_destroy(dst_map);
+    wifi_util_info_print(WIFI_CTRL, "%s:%d: RTesting exit 6\n", __func__, __LINE__);
             free(key);
             return NULL;
         }
         e = e->next;
     }
+    wifi_util_info_print(WIFI_CTRL, "%s:%d: RTesting exit 7\n", __func__, __LINE__);
     return dst_map;
 }

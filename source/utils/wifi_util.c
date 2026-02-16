@@ -1526,27 +1526,33 @@ BOOL is_vap_hotspot_open_6g(wifi_platform_property_t *wifi_prop, UINT ap_index)
 int country_code_conversion(wifi_countrycode_type_t *country_code, char *country, int country_len, unsigned int conv_type)
 {
     int i = 0;
+wifi_util_info_print(WIFI_CTRL, "%s:%d: RTesting entry\n", __func__, __LINE__);
     if ((country_code == NULL) || (country == NULL)) {
         return RETURN_ERR;
     }
 
     if (conv_type == STRING_TO_ENUM) {
+wifi_util_info_print(WIFI_CTRL, "%s:%d: RTesting entry IF\n", __func__, __LINE__);
         for (i = 0; i < MAX_WIFI_COUNTRYCODE; i++) {
             if(strcasecmp(country, wifiCountryMapMembers[i].countryStr) == 0) {
                 *country_code = wifiCountryMapMembers[i].countryCode;
+wifi_util_info_print(WIFI_CTRL, "%s:%d: RTesting exit IF\n", __func__, __LINE__);
                 return RETURN_OK;
             }
         }
 
         if(i == MAX_WIFI_COUNTRYCODE) {
+wifi_util_info_print(WIFI_CTRL, "%s:%d: RTesting exit 2 IF\n", __func__, __LINE__);
             return RETURN_ERR;
         }
 
     } else if (conv_type == ENUM_TO_STRING) {
+wifi_util_info_print(WIFI_CTRL, "%s:%d: RTesting entry else if\n", __func__, __LINE__);
         snprintf(country, country_len, "%s", wifiCountryMapMembers[*country_code].countryStr);
         return RETURN_OK;
     }
 
+wifi_util_info_print(WIFI_CTRL, "%s:%d: RTesting exit\n", __func__, __LINE__);
     return RETURN_ERR;
 }
 
@@ -3027,6 +3033,7 @@ int get_steering_cfg_id(char *key, int key_len, unsigned char * id, int id_len, 
     char buff[512];
     int i = 0, outbytes = 0;
     SHA256_CTX ctx;
+wifi_util_info_print(WIFI_CTRL, "%s:%d: RTesting entry\n", __func__, __LINE__);
     if ((key == NULL) || (id == NULL) || (st_cfg == NULL)) {
         wifi_util_dbg_print(WIFI_WEBCONFIG, "%s:%d: input arguements are NULL!!!\n", __func__, __LINE__);
         return RETURN_ERR;
@@ -3062,6 +3069,7 @@ int get_steering_cfg_id(char *key, int key_len, unsigned char * id, int id_len, 
 
     wifi_util_dbg_print(WIFI_WEBCONFIG,"%s:%d: key:%s\n", __func__, __LINE__, key);
 
+wifi_util_info_print(WIFI_CTRL, "%s:%d: RTesting exit\n", __func__, __LINE__);
     return RETURN_OK;
 }
 
@@ -4710,6 +4718,7 @@ int mac_address_from_name(const char *ifname, mac_address_t mac)
     int sock;
     struct ifreq ifr;
 
+wifi_util_info_print(WIFI_CTRL, "%s:%d: RTesting entry\n", __func__, __LINE__);
     if ((sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_IP)) < 0) {
         wifi_util_info_print(WIFI_WEBCONFIG,"%s:%d: Failed to create socket\n", __func__, __LINE__);
         return -1;
@@ -4726,6 +4735,7 @@ int mac_address_from_name(const char *ifname, mac_address_t mac)
 
     memcpy(mac, (unsigned char *)ifr.ifr_hwaddr.sa_data, sizeof(mac_address_t));
 
+wifi_util_info_print(WIFI_CTRL, "%s:%d: RTesting exit\n", __func__, __LINE__);
     close(sock);
 
     return 0;

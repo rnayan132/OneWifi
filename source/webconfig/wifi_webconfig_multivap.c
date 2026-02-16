@@ -141,6 +141,7 @@ webconfig_error_t encode_multivap_subdoc(webconfig_t *config, webconfig_subdoc_d
     char *str;
     char mac_string[18] = { 0 };
     int primary_macaddr_added = 0;
+wifi_util_info_print(WIFI_CTRL, "%s:%d: RTesting entry\n", __func__, __LINE__);
 
     wifi_util_dbg_print(WIFI_WEBCONFIG, "%s: Enter subdoc_type:%d\n", __FUNCTION__, data->type);
 
@@ -322,6 +323,7 @@ webconfig_error_t encode_multivap_subdoc(webconfig_t *config, webconfig_subdoc_d
     cJSON_free(str);
     cJSON_Delete(json);
     wifi_util_info_print(WIFI_WEBCONFIG, "%s:%d: encode success\n", __func__, __LINE__);
+wifi_util_info_print(WIFI_CTRL, "%s:%d: RTesting exit\n", __func__, __LINE__);
     return webconfig_error_none;
 }
 

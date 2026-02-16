@@ -3749,6 +3749,7 @@ webconfig_error_t decode_associated_clients_object(webconfig_subdoc_data_t *data
 
 webconfig_error_t decode_mac_object(rdk_wifi_vap_info_t *rdk_vap_info, cJSON *obj_array )
 {
+wifi_util_info_print(WIFI_CTRL, "%s:%d: RTesting entry\n", __func__, __LINE__);
     if ((rdk_vap_info == NULL) || (obj_array == NULL)) {
         wifi_util_error_print(WIFI_WEBCONFIG, "%s:%d MAC OBJECT decode failed\n",__FUNCTION__, __LINE__);
         return webconfig_error_decode;
@@ -3812,6 +3813,7 @@ webconfig_error_t decode_mac_object(rdk_wifi_vap_info_t *rdk_vap_info, cJSON *ob
         }
     }
 
+wifi_util_info_print(WIFI_CTRL, "%s:%d: RTesting exit\n", __func__, __LINE__);
     return webconfig_error_none;
 }
 

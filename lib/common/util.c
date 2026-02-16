@@ -54,6 +54,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "util.h"
 #include "log.h"
 #include "os.h"
+#include "wifi_util.h"
 
 
 #define UTIL_URI_MAX_LENG           512
@@ -1066,6 +1067,7 @@ char *file_get(const char *path)
     char *nbuf = NULL;
     char hunk[4096];
     int fd;
+    wifi_util_info_print(WIFI_CTRL, "%s:%d: RTesting entry\n", __func__, __LINE__);
     if ((fd = open(path, O_RDONLY)) < 0)
         goto err;
     while ((n = read(fd, hunk, sizeof(hunk))) > 0) {
@@ -1080,12 +1082,14 @@ char *file_get(const char *path)
         goto err_free;
     close(fd);
     LOGT("%s: read %-100s", path, (const char *)buf);
+    wifi_util_info_print(WIFI_CTRL, "%s:%d: RTesting exit 1\n", __func__, __LINE__);
     return buf;
 err_free:
     free(buf);
     close(fd);
 err:
     LOGT("%s: failed to read: %d (%s)", path, errno, strerror(errno));
+    wifi_util_info_print(WIFI_CTRL, "%s:%d: RTesting exit 2\n", __func__, __LINE__);
     return NULL;
 }
 
