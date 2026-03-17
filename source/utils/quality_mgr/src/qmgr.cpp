@@ -365,10 +365,11 @@ int qmgr_t::update_affinity_stats(affinity_arg_t *arg, bool create_flag)
     strncpy(mac_str, arg->mac_str, sizeof(mac_str) - 1);
     mac_str[sizeof(mac_str) - 1] = '\0';
 
+    wifi_util_info_print(WIFI_APPS," %s:%d\n", __func__,__LINE__);
     pthread_mutex_lock(&m_json_lock);
 
     /* ---------- CHECK MAP FOR EXISTING MAC ---------- */
-    std::unordered_map<const char*, affinity_arg_t>::iterator it;
+    std::unordered_map<const char*, caffinity_t *>::iterator it;
     bool map_exists = false;
 
     for (it = m_affinity_map.begin(); it != m_affinity_map.end(); ++it) {
@@ -453,10 +454,15 @@ int qmgr_t::update_affinity_stats(affinity_arg_t *arg, bool create_flag)
 
         /* insert into map */
         char *key = strdup(mac_str);
-        m_affinity_map[key] = *arg;
+        //m_affinity_map[key] = *arg;
 
         wifi_util_info_print(WIFI_APPS,
             "Added client %s to Connected_client\n", mac_str);
+
+        caffinity_t *caq = new caffinity_t(&mac_str);
+        caq->update_affinity_stats(arg);
+        m_affinity_map[key] = caq;
+        caq->score();
     }
 
     pthread_mutex_unlock(&m_json_lock);

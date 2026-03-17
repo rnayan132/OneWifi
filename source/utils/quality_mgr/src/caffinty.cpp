@@ -33,30 +33,37 @@
 
 int caffinity_t::update_affinity_stats(affinity_arg_t *arg)
 {
+    wifi_util_info_print(WIFI_APPS," %s:%d\n", __func__,__LINE__);
     switch(arg->event)
     {
         case wifi_event_hal_auth_frame:
+            wifi_util_info_print(WIFI_APPS," %s:%d\n", __func__,__LINE__);
             m_auth_attempts++;
             break;
 
         case wifi_event_hal_deauth_frame:
+            wifi_util_info_print(WIFI_APPS," %s:%d\n", __func__,__LINE__);
             m_auth_failures++;
             break;
 
         case wifi_event_hal_assoc_req_frame:
         case wifi_event_hal_reassoc_req_frame:
+            wifi_util_info_print(WIFI_APPS," %s:%d\n", __func__,__LINE__);
             m_assoc_attempts++;
             break;
 
         case wifi_event_hal_assoc_rsp_frame:
         case wifi_event_hal_reassoc_rsp_frame:
+            wifi_util_info_print(WIFI_APPS," %s:%d\n", __func__,__LINE__);
             m_assoc_failures++;
             break;
 
         case wifi_event_hal_sta_conn_status:
+            wifi_util_info_print(WIFI_APPS," %s:%d\n", __func__,__LINE__);
             break;
 
         case wifi_event_hal_disassoc_device:
+            wifi_util_info_print(WIFI_APPS," %s:%d\n", __func__,__LINE__);
             break;
 
         default:

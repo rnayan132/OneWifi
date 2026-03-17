@@ -90,6 +90,8 @@ typedef struct {
     unsigned int radio_index;
     int channel_utilization;
     int event;
+    int sta_conn_status;
+    int snr;
   } affinity_arg_t;
 
 

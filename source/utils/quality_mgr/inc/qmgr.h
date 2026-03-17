@@ -52,7 +52,7 @@ class qmgr_t {
     bool m_bg_running;
     cJSON *out_obj;
     cJSON *affinity_obj;
-    std::unordered_map<const char*, affinity_arg_t> m_affinity_map;
+    std::unordered_map<const char*, caffinity_t *> m_affinity_map;
 
     cJSON* create_affinity_template(mac_addr_str_t mac_str,unsigned int vap_index);
 public:
