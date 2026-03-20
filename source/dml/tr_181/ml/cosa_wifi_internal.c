@@ -581,7 +581,6 @@ void CosaDmlWiFiGetFromPSM(void)
             psm_vap_param = get_vap_psm_obj(vap_index);
             if (psm_vap_param == NULL) {
                 wifi_util_dbg_print(WIFI_PSM,"%s:%d psm vap param NULL vap_index:%d\r\n", __func__, __LINE__, (instance_number - 1));
-                continue;
             }
 
             memset(recName, 0, sizeof(recName));
